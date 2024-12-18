@@ -313,11 +313,9 @@ namespace RotaryControl
 
             _labels = new System.Collections.Generic.List<Label>();
 
-            /*
-             * Draw marker lines and labels: always 5 minor ticks.
-             */
+            // Draw marker lines and labels: always 5 minor ticks.
 
-            // Don't set MajorTickDialRadius and MajorTickLength as that will call this method! 
+            // (Don't set MajorTickDialRadius and MajorTickLength in this method as each call this method!)
 
             double majorTicksDialWidth = MajorTickDialRadius * 2;
 
@@ -335,7 +333,6 @@ namespace RotaryControl
 
             double majorTickStart = majorTicksDialWidth / 2.0;
             double majorTickEnd = majorTicksDialWidth / 2.0 - majorTickLength;
-
             double minorTickLength = (MinorTickLength > 0.0) ? MinorTickLength : majorTickLength / 8;
             double minorTickStart = (MinorTickDialRadius > 0.0) ? MinorTickDialRadius : majorTickEnd + minorTickLength;
             double minorTickEnd = minorTickStart - minorTickLength;
@@ -355,7 +352,7 @@ namespace RotaryControl
 
             double minorArc = majorArc / (double)(NumberOfMinorTicks + 1);
 
-            // Angles are measured relative to 3 o'clock. Thus 7 o'clock is 120 degrees etc.
+            // Angles are measured relative to 3 o'clock. Thus 7 o'clock is 120 degrees, etc.
 
             double majorAngleInRadians = StartAngleInRadians;
 
@@ -421,6 +418,11 @@ namespace RotaryControl
                     }
                 }
 
+                if (false == ShowLabels)
+                {
+                    continue;
+                }
+
                 // Major tick label:
 
                 Label label = new Label();
@@ -456,14 +458,13 @@ namespace RotaryControl
         /// <returns>Size object containing the computed height and width.</returns>
         private Size MeasureString(string candidate, Label label)
         {
-            var formattedText = new FormattedText(
-                candidate,
-                System.Globalization.CultureInfo.CurrentCulture,
-                FlowDirection.LeftToRight,
-                new Typeface(label.FontFamily, label.FontStyle, label.FontWeight, label.FontStretch),
-                label.FontSize,
-                Brushes.Black,
-                VisualTreeHelper.GetDpi(this).PixelsPerDip);
+            var formattedText = new FormattedText(candidate,
+                                                  System.Globalization.CultureInfo.CurrentCulture,
+                                                  FlowDirection.LeftToRight,
+                                                  new Typeface(label.FontFamily, label.FontStyle, label.FontWeight, label.FontStretch),
+                                                  label.FontSize,
+                                                  Brushes.Black,
+                                                  VisualTreeHelper.GetDpi(this).PixelsPerDip);
 
             return new Size(formattedText.Width, formattedText.Height);
         }
@@ -481,9 +482,8 @@ namespace RotaryControl
             double cosTheta = Math.Cos(angleInRadians);
             double sinTheta = Math.Sin(angleInRadians);
 
-            return new Point(
-                (int)(cosTheta * (point.X - originPoint.X) - sinTheta * (point.Y - originPoint.Y) + originPoint.X),
-                (int)(sinTheta * (point.X - originPoint.X) + cosTheta * (point.Y - originPoint.Y) + originPoint.Y));
+            return new Point((int)(cosTheta * (point.X - originPoint.X) - sinTheta * (point.Y - originPoint.Y) + originPoint.X),
+                             (int)(sinTheta * (point.X - originPoint.X) + cosTheta * (point.Y - originPoint.Y) + originPoint.Y));
         }
 
         /// <summary>
@@ -1708,43 +1708,6 @@ namespace RotaryControl
 
         #endregion
 
-        #region Value dependency property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnValueChanged)));
-
-        public double Value
-        {
-            get
-            {
-                return (double)GetValue(ValueProperty);
-            }
-            set
-            {
-                double maximumValue = MinimumValue + ((NumberOfMajorTicks - 1) * MajorTickIncrement);
-
-                SetValue(ValueProperty, Math.Min(Math.Max(value, MinimumValue), maximumValue));
-
-                UpdateMarkerPosition();
-            }
-        }
-
-        private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnValueChanged(e);
-        }
-
-        protected virtual void OnValueChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                Value = (double)e.NewValue;
-            }
-        }
-
-        #endregion
-
         #region SegmentThickness dependency property
 
         [Bindable(true)]
@@ -1783,6 +1746,43 @@ namespace RotaryControl
 
         #endregion
 
+        #region Show Labels dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty ShowLabelsProperty = DependencyProperty.Register("ShowLabels",
+                                                                                                   typeof(bool), 
+                                                                                                   typeof(RotaryControl), 
+                                                                                                   new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnShowLabelsChanged)));
+        public bool ShowLabels
+        {
+            get
+            {
+                return (bool)GetValue(ShowLabelsProperty);
+            }
+            set
+            {
+
+                    SetValue(ShowLabelsProperty, value);
+                
+            }
+        }
+
+        private static void OnShowLabelsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnShowLabelsChanged(e);
+        }
+
+        protected virtual void OnShowLabelsChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                ShowLabels = (bool)e.NewValue;
+            }
+        }
+
+        #endregion
+
         #region StartAngleInDegrees dependency property
 
         [Bindable(true)]
@@ -1813,6 +1813,43 @@ namespace RotaryControl
             if (null != e.NewValue)
             {
                 StartAngleInDegrees = (double)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region Value dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnValueChanged)));
+
+        public double Value
+        {
+            get
+            {
+                return (double)GetValue(ValueProperty);
+            }
+            set
+            {
+                double maximumValue = MinimumValue + ((NumberOfMajorTicks - 1) * MajorTickIncrement);
+
+                SetValue(ValueProperty, Math.Min(Math.Max(value, MinimumValue), maximumValue));
+
+                UpdateMarkerPosition();
+            }
+        }
+
+        private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnValueChanged(e);
+        }
+
+        protected virtual void OnValueChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                Value = (double)e.NewValue;
             }
         }
 

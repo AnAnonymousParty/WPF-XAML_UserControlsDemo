@@ -100,18 +100,19 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                 VerticalAlignment="Top">
                         <TextBox Text="{Binding KnobPosDisp, Mode=TwoWay}" Width="50" />
                         <rotaryControl:RotaryControl Background="Transparent" 
+                                                     EndAngleInDegrees="135"
                                                      LegendBrush="{Binding LegendBrush, Mode=TwoWay}"
                                                      LegendFontSize="{Binding LegendFontSize, Mode=TwoWay}"
                                                      LegendText="{Binding ControlLegendText, Mode=TwoWay}"
                                                      Foreground="DarkRed"                                                       
                                                      Height="200"
                                                      HorizontalAlignment="Center"
+                                                     StartAngleInDegrees="225"
                                                      Value="{Binding KnobPos, Mode=TwoWay}"
                                                      VerticalAlignment="Top"
                                                      Width="200"
                                                      x:Name="Control1">
 
-                            <rotaryControl:RotaryControl.EndAngleInDegrees>135</rotaryControl:RotaryControl.EndAngleInDegrees>
                             <rotaryControl:RotaryControl.FontBrush>White</rotaryControl:RotaryControl.FontBrush>
                             <rotaryControl:RotaryControl.LabelDialRadius>60</rotaryControl:RotaryControl.LabelDialRadius>
                             <rotaryControl:RotaryControl.MajorTickBrush>White</rotaryControl:RotaryControl.MajorTickBrush>
@@ -119,11 +120,10 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                             <rotaryControl:RotaryControl.MinimumValue>0</rotaryControl:RotaryControl.MinimumValue>
                             <rotaryControl:RotaryControl.MinorTickDialRadius>50</rotaryControl:RotaryControl.MinorTickDialRadius>
                             <rotaryControl:RotaryControl.MinorTickBrush>LightGray</rotaryControl:RotaryControl.MinorTickBrush>
-                            <rotaryControl:RotaryControl.MajorTickIncrement>90</rotaryControl:RotaryControl.MajorTickIncrement>
-                            <rotaryControl:RotaryControl.NumberOfMajorTicks>5</rotaryControl:RotaryControl.NumberOfMajorTicks>
+                            <rotaryControl:RotaryControl.MajorTickIncrement>10</rotaryControl:RotaryControl.MajorTickIncrement>
+                            <rotaryControl:RotaryControl.NumberOfMajorTicks>11</rotaryControl:RotaryControl.NumberOfMajorTicks>
                             <rotaryControl:RotaryControl.NumberOfMinorTicks>2</rotaryControl:RotaryControl.NumberOfMinorTicks>
                             <rotaryControl:RotaryControl.PointerType>arrow</rotaryControl:RotaryControl.PointerType>
-                            <rotaryControl:RotaryControl.StartAngleInDegrees>225</rotaryControl:RotaryControl.StartAngleInDegrees>
 
                             <rotaryControl:RotaryControl.PointerFill>
                                 <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
