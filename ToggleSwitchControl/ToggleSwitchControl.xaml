@@ -1,0 +1,342 @@
+﻿<!--
+
+This file is part of WPF-XAML_UserControlsDemo.
+
+WPF-XAML_UserControlsDemo is free software: you can redistribute it and/or modify
+it underthe terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later 
+version.
+
+WPF-XAML_UserControlsDemo is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+more details.
+
+You should have received a copy of the GNU General Public License along with
+WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>. 
+ 
+-->
+
+<!-- See the code behind for a list and description of the available properties. -->
+
+
+<UserControl d:DesignHeight="100" 
+             d:DesignWidth="100"
+             mc:Ignorable="d"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="ToggleSwitchControl.ToggleSwitchControl">
+    
+    <Grid Background="Transparent" 
+          DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"
+          HorizontalAlignment="Center" 
+          VerticalAlignment="Center">
+        <StackPanel Orientation="Vertical">
+            <StackPanel Orientation="Horizontal">
+                <ToggleButton Background="Transparent" 
+                              BorderThickness="0" 
+                              Height="48" 
+                              Width="48"
+                              x:Name="ToggleSwitchButton">
+                    <ToggleButton.Style>
+                        <Style TargetType="ToggleButton">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="Transparent" 
+                                                BorderBrush="Black"
+                                                BorderThickness="0">
+                                            <ContentPresenter Name="content"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsChecked" 
+                                                     Value="True">
+                                                <Setter Property="ContentPresenter.Content" 
+                                                        TargetName="content" >
+                                                    <Setter.Value>
+                                                        <Image Source="pack://application:,,,/ToggleSwitchControl;component/Images/ToggleSwitchOn_124X124.png"/>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ToggleButton.Style>
+                <Image Source="pack://application:,,,/ToggleSwitchControl;component/Images/ToggleSwitchOff_124X124.png" />
+            </ToggleButton>
+                <Image Height="16" 
+                       Width="16" 
+                       x:Name="LedImage">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <!-- LED in switch OFF state (with ControlEnable): -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDBlue" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/BlueLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDBlue" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/BlueLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDGreen" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/GreenLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDGreen" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/GreenLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDOrange" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/OrangeLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDOrange" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/OrangeLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDRed" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/RedLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDRed" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/RedLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDWhite" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/WhiteLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDWhite" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/WhiteLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDYellow" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/YellowLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOffColor}" Value="eLEDYellow" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/YellowLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+
+                                <!-- LED in switch ON state (with ControlEnable): -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDBlue" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/BlueLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDBlue" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/BlueLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDGreen" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/GreenLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDGreen" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/GreenLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDOrange" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/OrangeLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDOrange" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/OrangeLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDRed" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/RedLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDRed" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/RedLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>                                
+                                
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDWhite" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/WhiteLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDWhite" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/WhiteLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDYellow" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/YellowLEDOn.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                        <Condition Binding="{Binding LEDOnColor}" Value="eLEDYellow" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/ToggleSwitchControl;component/Images/YellowLEDOff.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>    
+            </StackPanel>
+            <Label Content="Legend" 
+                   Foreground="White" 
+                   HorizontalAlignment="Center"
+                   x:Name="SwitchLegend"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

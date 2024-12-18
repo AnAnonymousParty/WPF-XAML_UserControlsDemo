@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleMVVMUserControlDemo", "SimpleMVVMUserControlDemo.csproj", "{96C1F6F6-0AEA-4382-968C-7A9C207AD653}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RotaryControl", "RotaryControl\RotaryControl.csproj", "{52A9C732-32D4-4CEB-AAEE-AC02426289E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoystickControl", "JoystickControl\JoystickControl.csproj", "{0D9AEDEA-3D6C-47E7-9F3D-0CBF5FE0D133}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToggleSwitchControl", "ToggleSwitchControl\ToggleSwitchControl.csproj", "{BAA0AB06-B17D-49CA-A986-C1A9B8CAFBF9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{96C1F6F6-0AEA-4382-968C-7A9C207AD653}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96C1F6F6-0AEA-4382-968C-7A9C207AD653}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96C1F6F6-0AEA-4382-968C-7A9C207AD653}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96C1F6F6-0AEA-4382-968C-7A9C207AD653}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52A9C732-32D4-4CEB-AAEE-AC02426289E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52A9C732-32D4-4CEB-AAEE-AC02426289E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52A9C732-32D4-4CEB-AAEE-AC02426289E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52A9C732-32D4-4CEB-AAEE-AC02426289E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D9AEDEA-3D6C-47E7-9F3D-0CBF5FE0D133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D9AEDEA-3D6C-47E7-9F3D-0CBF5FE0D133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D9AEDEA-3D6C-47E7-9F3D-0CBF5FE0D133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D9AEDEA-3D6C-47E7-9F3D-0CBF5FE0D133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAA0AB06-B17D-49CA-A986-C1A9B8CAFBF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAA0AB06-B17D-49CA-A986-C1A9B8CAFBF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAA0AB06-B17D-49CA-A986-C1A9B8CAFBF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAA0AB06-B17D-49CA-A986-C1A9B8CAFBF9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
