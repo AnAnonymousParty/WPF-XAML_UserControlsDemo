@@ -159,6 +159,8 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                                              LEDOnColor="{Binding SwitchOnColor, Mode=TwoWay}"
                                                              LegendBrush="{Binding LegendBrush, Mode=TwoWay}"
                                                              LegendFontSize="{Binding LegendFontSize, Mode=TwoWay}"
+                                                             OffLabelText="WOOD"
+                                                             OnLabelText="SLOW"
                                                              SwitchLegendText="{Binding SwitchLegendText, Mode=TwoWay}"
                                                              SwitchSize="{Binding SwitchSize, Mode=TwoWay}"
                                                              Width="100"/>

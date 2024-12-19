@@ -31,6 +31,10 @@
 +--------------------------+----------+--------------------------------------------------------------+
 | LegendFontSize           | double   | Size of the font used to display the legend text.            |
 +--------------------------+----------+--------------------------------------------------------------+
+| OffLabelText             | String   | Text displayed below the LED.                                |
++--------------------------+----------+--------------------------------------------------------------+
+| OnLabelText              | String   | Text displayed above the LED.                                |
++--------------------------+----------+--------------------------------------------------------------+
 | SectionEnabled           | bool     | Determines whether the control in the section are enabled.   |
 +--------------------------+----------+--------------------------------------------------------------+
 | SwitchLegendText         | String   | Text displayed below the toggle switch.                      |
@@ -60,7 +64,7 @@ namespace ToggleSwitchControl
             InitializeComponent();
         }
 
-        #region Dependency 
+        #region Dependency Properties
 
         #region Control Enabled property
 
@@ -251,6 +255,74 @@ namespace ToggleSwitchControl
             if (null != e.NewValue)
             {
                 SwitchLegendText = (String)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region Off Label Text property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty OffLabelTextProperty = DependencyProperty.Register("OffLabelText",
+                                                                                                     typeof(String),
+                                                                                                     typeof(ToggleSwitchControl),
+                                                                                                     new FrameworkPropertyMetadata("OFF", OnOffLabelTextChanged));
+        public String OffLabelText
+        {
+            get { return (String)GetValue(OffLabelTextProperty); }
+            set
+            {
+                SetValue(OffLabelTextProperty, value);
+
+                OffLabel.Content = value;
+            }
+        }
+
+        private static void OnOffLabelTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((ToggleSwitchControl)d).OnOffLabelTextChanged(e);
+        }
+
+        protected virtual void OnOffLabelTextChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                OffLabelText = (String)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region On Label Text property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty OnLabelTextProperty = DependencyProperty.Register("OnLabelText",
+                                                                                                    typeof(String),
+                                                                                                    typeof(ToggleSwitchControl),
+                                                                                                    new FrameworkPropertyMetadata("OFF", OnOnLabelTextChanged));
+        public String OnLabelText
+        {
+            get { return (String)GetValue(OnLabelTextProperty); }
+            set
+            {
+                SetValue(OnLabelTextProperty, value);
+
+                OnLabel.Content = value;
+            }
+        }
+
+        private static void OnOnLabelTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((ToggleSwitchControl)d).OnOnLabelTextChanged(e);
+        }
+
+        protected virtual void OnOnLabelTextChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                OnLabelText = (String)e.NewValue;
             }
         }
 
