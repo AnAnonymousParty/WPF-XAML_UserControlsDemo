@@ -30,6 +30,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:toggleSwitchControl="clr-namespace:ToggleSwitchControl;assembly=ToggleSwitchControl"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
     <UserControl.Resources>
         <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
         <Style x:Key="GroupBoxStyle1" TargetType="{x:Type GroupBox}">
@@ -114,8 +115,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                         </joystickControl:Joystick>
                     </StackPanel>
                 </StackPanel>
-                <toggleSwitchControl:ToggleSwitchControl TBClkd="JSTSClkd"
-                                                         Height="100" 
+                <toggleSwitchControl:ToggleSwitchControl Height="100" 
                                                          HorizontalAlignment="Left" 
                                                          ControlEnabled="{Binding SectionEnabled, Mode=TwoWay}"
                                                          LEDOffColor="{Binding SwitchOffColor, Mode=TwoWay}"
@@ -124,6 +124,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                                          LegendFontSize="{Binding LegendFontSize, Mode=TwoWay}"
                                                          SwitchLegendText="{Binding SwitchLegendText, Mode=TwoWay}"
                                                          SwitchSize="{Binding SwitchSize, Mode=TwoWay}"
+                                                         TBClkd="JSTSClkd"
                                                          Width="100"
                                                          x:Name="JSTS"/>
             </StackPanel>

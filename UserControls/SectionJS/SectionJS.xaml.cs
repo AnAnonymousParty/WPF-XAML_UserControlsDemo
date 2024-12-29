@@ -256,7 +256,12 @@ namespace SimpleMVVMUserControlDemo.UserControls.SectionJS
             JSYPos = args.Y;
         }
 
-        private void JSTSClkd(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handle Toggle Switch being clicked.
+        /// </summary>
+        /// <param name="senderUnused">UI element objec triggering the event (unused).</param>
+        /// <param name="argsUnused">RoutedEventArgs object to contain any arguments (unused).</param>
+        private void JSTSClkd(object senderUnused, RoutedEventArgs argsUnused)
         {
             // ReSharper disable once PossibleNullReferenceException
             Logger.GetInstance().Log(new LogMessage(LogMessage.Severity.eDebug,
