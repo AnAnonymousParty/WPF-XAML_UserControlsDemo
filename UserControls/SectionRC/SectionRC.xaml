@@ -107,6 +107,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                                      Foreground="DarkRed"                                                       
                                                      Height="200"
                                                      HorizontalAlignment="Center"
+                                                     Size="0.75"
                                                      StartAngleInDegrees="225"
                                                      Value="{Binding KnobPos, Mode=TwoWay}"
                                                      VerticalAlignment="Top"
@@ -148,7 +149,8 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                 </LinearGradientBrush>
                             </rotaryControl:RotaryControl.OuterDialFill>
                             <rotaryControl:RotaryControl.LayoutTransform>
-                                <ScaleTransform  ScaleX="0.75" ScaleY="0.75"/>
+                                <ScaleTransform  ScaleX="{Binding Size, ElementName=Control1}" 
+                                                 ScaleY="{Binding Size, ElementName=Control1}"/>
                             </rotaryControl:RotaryControl.LayoutTransform>
                         </rotaryControl:RotaryControl>
                     </StackPanel>

@@ -1783,6 +1783,45 @@ namespace RotaryControl
 
         #endregion
 
+        #region Size dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty SizeProperty = DependencyProperty.Register("Size",
+                                                                                             typeof(double),
+                                                                                             typeof(RotaryControl),
+                                                                                             new FrameworkPropertyMetadata(0.0,
+                                                                                                                           new PropertyChangedCallback(OnSizeChanged)));
+
+        public double Size
+        {
+            get
+            {
+                return (double)GetValue(SizeProperty);
+            }
+            set
+            {
+                SetValue(SizeProperty, value);
+
+                CreateControl();
+            }
+        }
+
+        private static void OnSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnSizeChanged(e);
+        }
+
+        protected virtual void OnSizeChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                Size = (double)e.NewValue;
+            }
+        }
+
+        #endregion    
+    
         #region StartAngleInDegrees dependency property
 
         [Bindable(true)]
