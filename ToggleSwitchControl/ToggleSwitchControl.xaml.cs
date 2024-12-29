@@ -46,10 +46,11 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 
-using ToggleSwitchControl.Enums;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
+using ToggleSwitchControl.Enums;
 
 
 namespace ToggleSwitchControl
@@ -59,6 +60,15 @@ namespace ToggleSwitchControl
     /// </summary>
     public partial class ToggleSwitchControl
     {
+        public static readonly RoutedEvent TBClkdEvent = EventManager.RegisterRoutedEvent("TBClkd",
+                                                                                          RoutingStrategy.Bubble,
+                                                                                          typeof(RoutedEventHandler),
+                                                                                          typeof(ToggleSwitchControl));
+        public event RoutedEventHandler TBClkd;
+
+        /// <summary>
+        /// Constructor (default).
+        /// </summary>
         public ToggleSwitchControl()
         {
             InitializeComponent();
@@ -66,6 +76,7 @@ namespace ToggleSwitchControl
 
         #region Dependency Properties
 
+    
         #region Control Enabled property
 
         [Bindable(true)]
@@ -328,6 +339,25 @@ namespace ToggleSwitchControl
 
         #endregion
 
+        #region Switch On property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty SwitchOnProperty = DependencyProperty.Register("SwitchOn",
+                                                                                                 typeof(bool),
+                                                                                                 typeof(ToggleSwitchControl),
+                                                                                                 new FrameworkPropertyMetadata(false, OnControlEnabledChanged));
+        public bool SwitchOn
+        {
+            get { return (bool)GetValue(SwitchOnProperty); }
+            set
+            {
+                SetValue(SwitchOnProperty, value);
+            }
+        }
+
+        #endregion
+
         #region Switch Size property
 
         [Bindable(true)]
@@ -343,8 +373,8 @@ namespace ToggleSwitchControl
             {
                 SetValue(SwitchSizeProperty, value);
 
-                ToggleSwitchButton.Height = value;
-                ToggleSwitchButton.Width = value;
+                ToggleBtn.Height = value;
+                ToggleBtn.Width = value;
             }
         }
 
@@ -364,5 +394,28 @@ namespace ToggleSwitchControl
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// Handle ToggleButton clicked event.
+        /// </summary>
+        /// <remarks>
+        /// Sets the SwitchOn property. Produces a routed event.
+        /// </remarks>
+        /// <param name="sender">UI element object triggering the event (ToggleButton).</param>
+        /// <param name="e">RoutedEventArgs object.</param>
+        private void ToggleBtnClkd(object sender, RoutedEventArgs e)
+        {
+            var tsc = sender as ToggleButton;
+
+            if (null != tsc && null != tsc.IsChecked)
+            {
+                SwitchOn = (bool)tsc.IsChecked;
+            }
+
+            if (null != TBClkd)
+            {
+                TBClkd(this, e);
+            }
+        }
     }
 }

@@ -37,9 +37,10 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
             <StackPanel Orientation="Horizontal">
                 <ToggleButton Background="Transparent" 
                               BorderThickness="0" 
+                              Click="ToggleBtnClkd"
                               Height="48" 
                               Width="48"
-                              x:Name="ToggleSwitchButton">
+                              x:Name="ToggleBtn">
                     <ToggleButton.Style>
                         <Style TargetType="ToggleButton">
                             <Setter Property="Template">
@@ -83,7 +84,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     <!-- LED in switch OFF state (with ControlEnable): -->
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDBlue" />
                                         </MultiDataTrigger.Conditions>
@@ -93,7 +94,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDBlue" />
                                         </MultiDataTrigger.Conditions>
@@ -104,7 +105,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDGreen" />
                                         </MultiDataTrigger.Conditions>
@@ -114,7 +115,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDGreen" />
                                         </MultiDataTrigger.Conditions>
@@ -125,7 +126,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDOrange" />
                                         </MultiDataTrigger.Conditions>
@@ -135,7 +136,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDOrange" />
                                         </MultiDataTrigger.Conditions>
@@ -146,7 +147,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDRed" />
                                         </MultiDataTrigger.Conditions>
@@ -156,7 +157,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDRed" />
                                         </MultiDataTrigger.Conditions>
@@ -167,7 +168,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDWhite" />
                                         </MultiDataTrigger.Conditions>
@@ -177,7 +178,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDWhite" />
                                         </MultiDataTrigger.Conditions>
@@ -188,7 +189,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDYellow" />
                                         </MultiDataTrigger.Conditions>
@@ -198,7 +199,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="False"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="False"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOffColor}" Value="eLEDYellow" />
                                         </MultiDataTrigger.Conditions>
@@ -211,7 +212,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     <!-- LED in switch ON state (with ControlEnable): -->
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDBlue" />
                                         </MultiDataTrigger.Conditions>
@@ -221,7 +222,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDBlue" />
                                         </MultiDataTrigger.Conditions>
@@ -232,7 +233,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDGreen" />
                                         </MultiDataTrigger.Conditions>
@@ -242,7 +243,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDGreen" />
                                         </MultiDataTrigger.Conditions>
@@ -253,7 +254,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDOrange" />
                                         </MultiDataTrigger.Conditions>
@@ -263,7 +264,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDOrange" />
                                         </MultiDataTrigger.Conditions>
@@ -274,7 +275,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDRed" />
                                         </MultiDataTrigger.Conditions>
@@ -284,7 +285,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDRed" />
                                         </MultiDataTrigger.Conditions>
@@ -295,7 +296,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDWhite" />
                                         </MultiDataTrigger.Conditions>
@@ -305,7 +306,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDWhite" />
                                         </MultiDataTrigger.Conditions>
@@ -316,7 +317,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
 
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDYellow" />
                                         </MultiDataTrigger.Conditions>
@@ -326,7 +327,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                     </MultiDataTrigger>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
-                                            <Condition Binding="{Binding ElementName=ToggleSwitchButton, Path=IsChecked}" Value="True"/>
+                                            <Condition Binding="{Binding ElementName=ToggleBtn, Path=IsChecked}" Value="True"/>
                                             <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                             <Condition Binding="{Binding LEDOnColor}" Value="eLEDYellow" />
                                         </MultiDataTrigger.Conditions>

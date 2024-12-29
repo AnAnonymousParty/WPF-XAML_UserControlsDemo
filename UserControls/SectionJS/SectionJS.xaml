@@ -114,17 +114,18 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                         </joystickControl:Joystick>
                     </StackPanel>
                 </StackPanel>
-            <toggleSwitchControl:ToggleSwitchControl 
-                Height="100" 
-                HorizontalAlignment="Left" 
-                ControlEnabled="{Binding SectionEnabled, Mode=TwoWay}"
-                LEDOffColor="{Binding SwitchOffColor, Mode=TwoWay}"
-                LEDOnColor="{Binding SwitchOnColor, Mode=TwoWay}"
-                LegendBrush="{Binding LegendBrush, Mode=TwoWay}"
-                LegendFontSize="{Binding LegendFontSize, Mode=TwoWay}"
-                SwitchLegendText="{Binding SwitchLegendText, Mode=TwoWay}"
-                SwitchSize="{Binding SwitchSize, Mode=TwoWay}"
-                Width="100"/>
+                <toggleSwitchControl:ToggleSwitchControl TBClkd="JSTSClkd"
+                                                         Height="100" 
+                                                         HorizontalAlignment="Left" 
+                                                         ControlEnabled="{Binding SectionEnabled, Mode=TwoWay}"
+                                                         LEDOffColor="{Binding SwitchOffColor, Mode=TwoWay}"
+                                                         LEDOnColor="{Binding SwitchOnColor, Mode=TwoWay}"
+                                                         LegendBrush="{Binding LegendBrush, Mode=TwoWay}"
+                                                         LegendFontSize="{Binding LegendFontSize, Mode=TwoWay}"
+                                                         SwitchLegendText="{Binding SwitchLegendText, Mode=TwoWay}"
+                                                         SwitchSize="{Binding SwitchSize, Mode=TwoWay}"
+                                                         Width="100"
+                                                         x:Name="JSTS"/>
             </StackPanel>
         </GroupBox>
     </Grid>

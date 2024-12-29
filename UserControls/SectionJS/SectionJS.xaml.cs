@@ -255,5 +255,23 @@ namespace SimpleMVVMUserControlDemo.UserControls.SectionJS
             JSXPos = args.X;
             JSYPos = args.Y;
         }
+
+        private void JSTSClkd(object sender, RoutedEventArgs e)
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            Logger.GetInstance().Log(new LogMessage(LogMessage.Severity.eDebug,
+                LogMessage.LogMessageType.eSubInfo,
+                GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name,
+                "Auto Pos = " + (true == JSTS.SwitchOn ? "ON" : "OFF")));
+
+            string messageBoxText = "Switch = " + (true == JSTS.SwitchOn ? "ON" : "OFF");
+            string caption = "Toggle Switch Clicked";
+
+            MessageBoxButton button = MessageBoxButton.YesNoCancel;
+            MessageBoxImage icon = MessageBoxImage.Warning;
+            MessageBoxResult result;
+
+            result = MessageBox.Show(messageBoxText, caption, button, icon, MessageBoxResult.Yes);
+        }
     }
 }
