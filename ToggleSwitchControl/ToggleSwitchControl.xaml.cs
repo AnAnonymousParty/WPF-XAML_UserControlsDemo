@@ -103,7 +103,7 @@ namespace ToggleSwitchControl
         {
             if (null != e.NewValue)
             {
-                ControlEnabled = (bool)e.NewValue;
+
             }
         }
         #endregion

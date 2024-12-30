@@ -86,7 +86,7 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
             </Path.Data>
         </Path>
 
-        <Path Name="_pointerAxle" Stroke="Black" StrokeThickness="0" Fill="Black" Panel.ZIndex="101">
+        <Path Name="_pointerAxle" Stroke="#00FF00" StrokeThickness="10" Fill="#00FFFF" Panel.ZIndex="101">
             <Path.Data>
                 <PathGeometry>
                     <PathFigure StartPoint="100,97" x:Name="_pointerPathFigure">

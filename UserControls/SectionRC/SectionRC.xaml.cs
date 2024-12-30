@@ -1,12 +1,19 @@
-﻿// For the record . . .                                                                                                          
-//                                                                                                                               
-// Copyright © 2024 by Art Surgant.                                                                        
-//                                                                                                                               
-// All rights reserved.  No part of this program may be reproduced, stored in a
-// retrieval system or transmitted, in any form or by any means, including but 
-// not limited to electronic, mechanical, photocopying, recording, or otherwise, 
-// without the express prior written consent of Art Surgant, 825 Crosswood Ct.
-// Saint Charles, MO  63303. (618) 741-1153. afs.sbl@gmail.com.using System;
+﻿/*
+ * This file is part of WPF-XAML_UserControlsDemo.
+ *
+ * WPF-XAML_UserControlsDemo is free software: you can redistribute it and/or 
+ * modify it under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation, either version 3 of the License, or (at your 
+ * option) any later version.
+ *
+ * WPF-XAML_UserControlsDemo is distributed in the hope that it will be useful, 
+ * but WITHOUT  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>. 
+ */
 
 /*
 +=======================================================================================================+
@@ -215,6 +222,22 @@ namespace SimpleMVVMUserControlDemo.UserControls.SectionRC
                                                                                                    typeof(SectionRC),
                                                                                                    new PropertyMetadata(64.0));
         #endregion
+
+        /// <summary>
+        /// Handle Toggle Switch being clicked.
+        /// </summary>
+        /// <param name="senderUnused">UI element objec triggering the event (unused).</param>
+        /// <param name="argsUnused">RoutedEventArgs object to contain any arguments (unused).</param>
+        private void RCTSClkd(object senderUnused, RoutedEventArgs argsUnused)
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            Logger.GetInstance().Log(new LogMessage(LogMessage.Severity.eDebug,
+                LogMessage.LogMessageType.eSubInfo,
+                GetType().FullName, System.Reflection.MethodBase.GetCurrentMethod().Name,
+                "Switch = " + (true == RCTS.SwitchOn ? "ON" : "OFF")));
+
+            Control1.ControlEnabled = RCTS.SwitchOn;
+        }
     }
 }
 

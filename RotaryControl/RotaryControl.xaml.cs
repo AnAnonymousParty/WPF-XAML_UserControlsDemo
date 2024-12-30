@@ -7,6 +7,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.ComponentModel;
 using System.Windows.Input;
+using RotaryControl.Common;
 
 namespace RotaryControl
 {
@@ -14,82 +15,97 @@ namespace RotaryControl
     /// Interaction logic for RotaryControl.xaml.
     /// </summary>
     /// <remarks>
-    /// +=====================================================================================================================+
-    /// |                                           DEPENDENCY PROPERTIES                                                     |
-    /// +==========================+==========================================================================================+
-    /// | Arcs		                   | An optional array of colored segments each with its own starting angle,                  |
-    /// |                          | arc angle, radius and thickness.                                                         |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | EndAngleInDegrees	       | The angle of the last major tick relative to the 12 o'clock position.                    |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | FontBrush		              | The brush used to draw the numerals around the label dial.                               |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | InnerDialFill		          | The brush used to fill the inner dial.                                                   |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | InnerDialRadius	         | The radius of the inner dial.                                                            |
-    /// |                          | The inner dial may be used to draw a rotating knob with a circular position indicator.   |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | LegendBrush              | The color of the title label displayed below the control.                                |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | LegendFontSize           | The font size of the title label displayed below the control.                            |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | LegendText               | The Legend label displayed below the control.                                            | 
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MajorTickBrush	          | The brush used to draw the major ticks.                                                  |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MajorTickDialRadius	     | The radius of the major tick dial.                                                       |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MajorTickIncrement	      | The numerical increment between adjacent major ticks.                                    |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MajorTickLength		        | The length of each major tick.                                                           |
-    /// +--------------------------+------------------------------------------------------------------------------------------+	
-    /// | MajorTickWidth		         | The width of each major tick.                                                            |	
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MinimumValue		           | The minimum allowed value.                                                               |	
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MinorTickBrush		         | The brush used to draw the minor ticks.                                                  |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MinorTickDialRadius  	   | The radius of the minor tick dial.                                                       |	
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | MinorTickLength	     	   | The length of each minor tick.                                                           |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | NumberOfMajorTicks	      | The number of major ticks (excluding the one at zero).                                   |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | NumberOfMinorTicks   	   | The number of minor ticks per major tick increment.                                      |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | OuterDialBorder		        | The brush used to fill the outer dial border.	                                           |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | OuterDialBorderThickness | The thickness of the outer dial border.                                                  |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | OuterDialFill		          | The brush used to fill the outer dial.                                                   |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// |                          | The outer dial contains the other dials, the labels, the ticks and the pointer.          |
-    /// | PointerType		            | The type of pointer. Allowed values are as follows:                                      |
-    /// |                          |    "circle" : A circular position indicator.                                             |
-    /// |                          |    "arrow" : A triangular pointer.                                                       |
-    /// |                          |    "rectangle" : A rectangular pointer.                                                  |
-    /// |                          |    "standard" : A sword shaped pointer.                                                  |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | SegmentRadius		          | The radius of the segments.	                                                             |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | Segments		               | An optional array of contiguous colored segments sharing the same radius and thickness.  |	
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | SegmentThickness		       | The width of the colored segments.	                                                      |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | StartAngleInDegrees	     | The angle of the first major tick relative to the 12 o'clock position.                   |
-    /// +--------------------------+------------------------------------------------------------------------------------------+
-    /// | Value                    | The current reading. If you want to bind to this value:                                  |
-    /// |                          | Value="{Binding CoupledValue, Mode=TwoWay}"                                              |
-    /// +==========================+==========================================================================================+ 
+    /// +================================================================================================================================+
+    /// |                                                      DEPENDENCY PROPERTIES                                                     |
+    /// +==========================+==========+==========================================================================================+
+    /// |          NAME            |   TYPE   |                              DESCRIPTION                                                 |
+    /// +==========================+==========+==========================================================================================+
+    /// | ControlEnabled           | bool     | Determines whether the control is enabled.                                               |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | Arcs		                   | Arcs     | An optional array of colored segments each with its own starting angle,                  |
+    /// |                          |          | arc angle, radius and thickness.                                                         |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | EndAngleInDegrees	       | double   | The angle of the last major tick relative to the 12 o'clock position.                    |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | FontBrush		              | Brush    | The brush used to draw the numerals around the label dial.                               |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | InnerDialFill		          | Brush    | The brush used to fill the inner dial.                                                   |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | InnerDialRadius	         | double   | The radius of the inner dial.                                                            |
+    /// |                          |          | The inner dial may be used to draw a rotating knob with a circular position indicator.   |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | LabelDialRadius          | double   | The radius of the label dial.                                                            |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | LegendBrush              | Brush    | The color of the title label displayed below the control.                                |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | LegendFontSize           | double   | The font size of the title label displayed below the control.                            |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | LegendText               | String   | The Legend label displayed below the control.                                            | 
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MajorTickBrush	          | Brush    | The brush used to draw the major ticks.                                                  |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MajorTickDialRadius	     | double   | The radius of the major tick dial.                                                       |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MajorTickIncrement	      | double   | The numerical increment between adjacent major ticks.                                    |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MajorTickLength		        | double   | The length of each major tick.                                                           |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+	
+    /// | MajorTickWidth		         | double   | The width of each major tick.                                                            |	
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MinimumValue		           | double   | The minimum allowed value.                                                               |	
+    /// +--------------------------+-----------------------------------------------------------------------------------------------------+
+    /// | MinorTickBrush		         | double   | The brush used to draw the minor ticks.                                                  |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MinorTickDialRadius  	   | double   | The radius of the minor tick dial.                                                       |	
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | MinorTickLength	     	   | double   | The length of each minor tick.                                                           |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | NumberOfMajorTicks	      | int      | The number of major ticks (excluding the one at zero).                                   |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | NumberOfMinorTicks   	   | int      | The number of minor ticks per major tick increment.                                      |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | OuterDialBorder		        | Brush    | The brush used to fill the outer dial border.	                                           |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | OuterDialBorderThickness | double   | The thickness of the outer dial border.                                                  |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | OuterDialFill		          | Brush    | The brush used to fill the outer dial.                                                   |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | PointerAxleFillActive    | Brush    | The brush used to fill the axle when the control is active/enabled.                      |                                        
+    /// +--------------------------+----------+--------------------------------------------------------------------=---------------------+
+    /// | PointerAxleFillInactive  | Brush    | The brush used to fill the axle when the control is inactive/disabled.                   |  
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | PointerAxleRadius        | double   | The radius of the pointer axle.                                                          | 
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | PointerFill              | Brush    | The brush used to fill the pointer.                                                      | 
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | PointerLength            | double   | The length of the pointer.                                                               |                                       
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | PointerType	             | string   | The type of pointer. Allowed values are as follows:                                      |
+    /// |                          |          | "circle" : A circular position indicator.                                                |
+    /// |                          |          | "arrow" : A triangular pointer.                                                          |
+    /// |                          |          | "rectangle" : A rectangular pointer.                                                     |
+    /// |                          |          | "standard" : A sword shaped pointer.                                                     |
+    /// +--------------------------+-----------------------------------------------------------------------------------------------------+
+    /// | PointerWidth             | double   | The width of the pointer.                                                                | 
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | SegmentRadius		          | double   | The radius of the segments.	                                                             |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | Segments		               | Segments | An optional array of contiguous colored segments sharing the same radius and thickness.  |	
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | SegmentThickness		       | double   | The width of the colored segments.	                                                      |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | ShowLabels      		       | bool     | Enable/disable display of labels. 	                                                      |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | Size                     | double   | The size of the control.          	                                                      |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | StartAngleInDegrees	     | double   | The angle of the first major tick relative to the 12 o'clock position.                   |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | Value                    | double   | The current reading. If you want to bind to this value:                                  |
+    /// |                          |          | Value="{Binding CoupledValue, Mode=TwoWay}"                                              |
+    /// +==========================+==========+==========================================================================================+ 
     /// </remarks>
     public partial class RotaryControl
     {
-        const double OneTwentyDegreesInRadians = (Math.PI + Math.PI) / 3;
-        const double ThirtyDegreesInRadians = Math.PI / 6;
-
-        private const double constMinimumMajorTickIncrement = 0.1;
-        private const double constMaximumMajorTickIncrement = 1000;
-
         private System.Collections.Generic.List<Label> _labels;
 
         private double constOuterDialWidth = 150.0;
@@ -512,6 +528,15 @@ namespace RotaryControl
             _markerTranslation.X = x;
             _markerTranslation.Y = y;
 
+            if (true == ControlEnabled)
+            {
+                _pointerAxle.Stroke = PointerAxleFillActive;
+            }
+            else
+            {
+                _pointerAxle.Stroke = PointerAxleFillInactive;
+            }
+
             _pointerAxle.Visibility = Visibility.Hidden;
             _pointerCircle.Visibility = Visibility.Hidden;
             _pointerStandard.Visibility = Visibility.Hidden;
@@ -625,6 +650,48 @@ namespace RotaryControl
             if (null != e.NewValue)
             {
                 Arcs = (System.Collections.IEnumerable)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region Control Enabled property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty ControlEnabledProperty = DependencyProperty.Register("ControlEnabled",
+                                                                                                       typeof(bool),
+                                                                                                       typeof(RotaryControl),
+                                                                                                       new FrameworkPropertyMetadata(false,
+                                                                                                                                     OnControlEnabledChanged));
+        public bool ControlEnabled
+        {
+            get { return (bool)GetValue(ControlEnabledProperty); }
+            set
+            {
+                SetValue(ControlEnabledProperty, value);
+
+                if (true == ControlEnabled)
+                {
+                    _pointerAxle.Stroke = PointerAxleFillActive;
+                }
+                else
+                {
+                    _pointerAxle.Stroke = PointerAxleFillInactive;
+                }
+            }
+        }
+
+        private static void OnControlEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnControlEnabledChanged(e);
+        }
+
+        protected virtual void OnControlEnabledChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+
             }
         }
 
@@ -849,9 +916,6 @@ namespace RotaryControl
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static readonly DependencyProperty InnerDialRadiusProperty = DependencyProperty.Register("InnerDialRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(100.0, new PropertyChangedCallback(OnInnerDialRadiusChanged)));
 
-        private const double constMinimumInnerDialRadius = 0;
-        private const double constMaximumInnerDialRadius = 75;
-
         public double InnerDialRadius
         {
             get
@@ -860,7 +924,7 @@ namespace RotaryControl
             }
             set
             {
-                SetValue(InnerDialRadiusProperty, Math.Min(Math.Max(value, constMinimumInnerDialRadius), constMaximumInnerDialRadius));
+                SetValue(InnerDialRadiusProperty, Math.Min(Math.Max(value, Constants.constMinimumInnerDialRadius), Constants.constMaximumInnerDialRadius));
             }
         }
 
@@ -1000,7 +1064,7 @@ namespace RotaryControl
             }
             set
             {
-                SetValue(MajorTickIncrementProperty, Math.Min(Math.Max(value, constMinimumMajorTickIncrement), constMaximumMajorTickIncrement));
+                SetValue(MajorTickIncrementProperty, Math.Min(Math.Max(value, Constants.constMinimumMajorTickIncrement), Constants.constMaximumMajorTickIncrement));
             }
         }
 
@@ -1237,9 +1301,6 @@ namespace RotaryControl
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static readonly DependencyProperty NumberOfMajorTicksProperty = DependencyProperty.Register("NumberOfMajorTicks", typeof(int), typeof(RotaryControl), new FrameworkPropertyMetadata(10, new PropertyChangedCallback(OnNumberOfMajorTicksChanged)));
 
-        private const int constMinimumNumberOfMajorTicks = 3;
-        private const int constMaximumNumberOfMajorTicks = 20;
-
         public int NumberOfMajorTicks
         {
             get
@@ -1248,7 +1309,7 @@ namespace RotaryControl
             }
             set
             {
-                SetValue(NumberOfMajorTicksProperty, Math.Min(Math.Max(value, constMinimumNumberOfMajorTicks), constMaximumNumberOfMajorTicks));
+                SetValue(NumberOfMajorTicksProperty, Math.Min(Math.Max(value, Constants.constMinimumNumberOfMajorTicks), Constants.constMaximumNumberOfMajorTicks));
             }
         }
 
@@ -1275,9 +1336,6 @@ namespace RotaryControl
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public static readonly DependencyProperty NumberOfMinorTicksProperty = DependencyProperty.Register("NumberOfMinorTicks", typeof(int), typeof(RotaryControl), new FrameworkPropertyMetadata(4, new PropertyChangedCallback(OnNumberOfMinorTicksChanged)));
 
-        private const int constMinimumNumberOfMinorTicks = 0;
-        private const int constMaximumNumberOfMinorTicks = 20;
-
         public int NumberOfMinorTicks
         {
             get
@@ -1286,7 +1344,7 @@ namespace RotaryControl
             }
             set
             {
-                SetValue(NumberOfMinorTicksProperty, Math.Min(Math.Max(value, constMinimumNumberOfMinorTicks), constMaximumNumberOfMinorTicks));
+                SetValue(NumberOfMinorTicksProperty, Math.Min(Math.Max(value, Constants.constMinimumNumberOfMinorTicks), Constants.constMaximumNumberOfMinorTicks));
             }
         }
 
@@ -1415,41 +1473,6 @@ namespace RotaryControl
 
         #endregion
 
-        #region PointerAxleFill dependency property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerAxleFillProperty = DependencyProperty.Register("PointerAxleFill", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(Brushes.Black, new PropertyChangedCallback(OnPointerAxleFillChanged)));
-
-        public Brush PointerAxleFill
-        {
-            get
-            {
-                return (Brush)GetValue(PointerAxleFillProperty);
-            }
-            set
-            {
-                SetValue(PointerAxleFillProperty, value);
-
-                _pointerAxle.Fill = PointerAxleFill;
-            }
-        }
-
-        private static void OnPointerAxleFillChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnPointerAxleFillChanged(e);
-        }
-
-        protected virtual void OnPointerAxleFillChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                PointerAxleFill = (Brush)e.NewValue;
-            }
-        }
-
-        #endregion
-
         #region PointerAxleRadius dependency property
 
         [Bindable(true)]
@@ -1490,12 +1513,87 @@ namespace RotaryControl
 
         #endregion
 
+        #region PointerAxleFillActive dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty PointerAxleFillActiveProperty = DependencyProperty.Register("PointerAxleFillActive",
+                                                                                                              typeof(Brush),
+                                                                                                              typeof(RotaryControl),
+                                                                                                              new FrameworkPropertyMetadata(Brushes.Green,
+                                                                                                                                            new PropertyChangedCallback(OnPointerAxleFillActiveChanged)));
+        public Brush PointerAxleFillActive
+        {
+            get
+            {
+                return (Brush)GetValue(PointerAxleFillActiveProperty);
+            }
+            set
+            {
+                SetValue(PointerAxleFillActiveProperty, value);
+            }
+        }
+
+        private static void OnPointerAxleFillActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnPointerAxleFillActiveChanged(e);
+        }
+
+        protected virtual void OnPointerAxleFillActiveChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                PointerAxleFillActive = (Brush)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region PointerAxleFillInactive dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty PointerAxleFillInactiveProperty = DependencyProperty.Register("PointerAxleFillInactive",
+                                                                                                                typeof(Brush),
+                                                                                                                typeof(RotaryControl),
+                                                                                                                new FrameworkPropertyMetadata(Brushes.Red,
+                                                                                                                                              new PropertyChangedCallback(OnPointerAxleFillInactiveChanged)));
+        public Brush PointerAxleFillInactive
+        {
+            get
+            {
+                return (Brush)GetValue(PointerAxleFillInactiveProperty);
+            }
+            set
+            {
+                SetValue(PointerAxleFillInactiveProperty, value);
+            }
+        }
+
+        private static void OnPointerAxleFillInactiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnPointerAxleFillInactiveChanged(e);
+        }
+
+        protected virtual void OnPointerAxleFillInactiveChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                PointerAxleFillInactive = (Brush)e.NewValue;
+            }
+        }
+
+        #endregion
+
         #region PointerFill dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerFillProperty = DependencyProperty.Register("PointerFill", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(DefaultPointerFill(), new PropertyChangedCallback(OnPointerFillChanged)));
-
+        public static readonly DependencyProperty PointerFillProperty = DependencyProperty.Register("PointerFill",
+                                                                                                    typeof(Brush),
+                                                                                                    typeof(RotaryControl),
+                                                                                                    new FrameworkPropertyMetadata(DefaultPointerFill(),
+                                                                                                    new PropertyChangedCallback(OnPointerFillChanged)));
         public Brush PointerFill
         {
             get
@@ -1506,10 +1604,10 @@ namespace RotaryControl
             {
                 SetValue(PointerFillProperty, value);
 
-                _pointerCircle.Fill = PointerFill;
-                _pointerStandard.Fill = PointerFill;
-                _pointerRectangle.Fill = PointerFill;
                 _pointerArrow.Fill = PointerFill;
+                _pointerCircle.Fill = PointerFill;
+                _pointerRectangle.Fill = PointerFill;
+                _pointerStandard.Fill = PointerFill;
             }
         }
 

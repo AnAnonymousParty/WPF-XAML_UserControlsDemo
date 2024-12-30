@@ -30,6 +30,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
              xmlns:rotaryControl="clr-namespace:RotaryControl;assembly=RotaryControl"                 
              xmlns:toggleSwitchControl="clr-namespace:ToggleSwitchControl;assembly=ToggleSwitchControl"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
     <UserControl.Resources>
         <BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>
         <Style x:Key="GroupBoxStyle1" TargetType="{x:Type GroupBox}">
@@ -100,31 +101,33 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                 VerticalAlignment="Top">
                         <TextBox Text="{Binding KnobPosDisp, Mode=TwoWay}" Width="50" />
                         <rotaryControl:RotaryControl Background="Transparent" 
+                                                     ControlEnabled="False"
                                                      EndAngleInDegrees="135"
+                                                     FontBrush="White"
+                                                     Foreground="DarkRed"                                                       
+                                                     Height="200"
+                                                     HorizontalAlignment="Center"                                                     
+                                                     LabelDialRadius="60"
                                                      LegendBrush="{Binding LegendBrush, Mode=TwoWay}"
                                                      LegendFontSize="{Binding LegendFontSize, Mode=TwoWay}"
                                                      LegendText="{Binding ControlLegendText, Mode=TwoWay}"
-                                                     Foreground="DarkRed"                                                       
-                                                     Height="200"
-                                                     HorizontalAlignment="Center"
+                                                     MajorTickBrush="White"
+                                                     MajorTickDialRadius="60"
+                                                     MajorTickIncrement="10"
+                                                     MinimumValue="0"
+                                                     MinorTickBrush="LightGray"
+                                                     MinorTickDialRadius="50"
+                                                     NumberOfMajorTicks="11"
+                                                     NumberOfMinorTicks="2"
+                                                     PointerAxleFillActive="#00FF00"
+                                                     PointerAxleFillInactive="#FF0000"  
+                                                     PointerType="arrow"
                                                      Size="0.75"
                                                      StartAngleInDegrees="225"
                                                      Value="{Binding KnobPos, Mode=TwoWay}"
                                                      VerticalAlignment="Top"
                                                      Width="200"
                                                      x:Name="Control1">
-
-                            <rotaryControl:RotaryControl.FontBrush>White</rotaryControl:RotaryControl.FontBrush>
-                            <rotaryControl:RotaryControl.LabelDialRadius>60</rotaryControl:RotaryControl.LabelDialRadius>
-                            <rotaryControl:RotaryControl.MajorTickBrush>White</rotaryControl:RotaryControl.MajorTickBrush>
-                            <rotaryControl:RotaryControl.MajorTickDialRadius>60</rotaryControl:RotaryControl.MajorTickDialRadius>
-                            <rotaryControl:RotaryControl.MinimumValue>0</rotaryControl:RotaryControl.MinimumValue>
-                            <rotaryControl:RotaryControl.MinorTickDialRadius>50</rotaryControl:RotaryControl.MinorTickDialRadius>
-                            <rotaryControl:RotaryControl.MinorTickBrush>LightGray</rotaryControl:RotaryControl.MinorTickBrush>
-                            <rotaryControl:RotaryControl.MajorTickIncrement>10</rotaryControl:RotaryControl.MajorTickIncrement>
-                            <rotaryControl:RotaryControl.NumberOfMajorTicks>11</rotaryControl:RotaryControl.NumberOfMajorTicks>
-                            <rotaryControl:RotaryControl.NumberOfMinorTicks>2</rotaryControl:RotaryControl.NumberOfMinorTicks>
-                            <rotaryControl:RotaryControl.PointerType>arrow</rotaryControl:RotaryControl.PointerType>
 
                             <rotaryControl:RotaryControl.PointerFill>
                                 <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
@@ -165,7 +168,9 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                                              OnLabelText="SLOW"
                                                              SwitchLegendText="{Binding SwitchLegendText, Mode=TwoWay}"
                                                              SwitchSize="{Binding SwitchSize, Mode=TwoWay}"
-                                                             Width="100"/>
+                                                             TBClkd="RCTSClkd"
+                                                             Width="100"
+                                                             x:Name="RCTS"/>
                 </StackPanel>
             </StackPanel>
         </GroupBox>

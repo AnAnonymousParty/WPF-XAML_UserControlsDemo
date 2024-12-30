@@ -126,7 +126,7 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                                          SwitchSize="{Binding SwitchSize, Mode=TwoWay}"
                                                          TBClkd="JSTSClkd"
                                                          Width="100"
-                                                         x:Name="JSTS"/>
+                                                         x:Name="JSTS" />
             </StackPanel>
         </GroupBox>
     </Grid>
