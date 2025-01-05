@@ -6,8 +6,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.ComponentModel;
+using System.Globalization;
 using System.Windows.Input;
+
 using RotaryControl.Common;
+
 
 namespace RotaryControl
 {
@@ -28,6 +31,8 @@ namespace RotaryControl
     /// | EndAngleInDegrees	       | double   | The angle of the last major tick relative to the 12 o'clock position.                    |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
     /// | FontBrush		              | Brush    | The brush used to draw the numerals around the label dial.                               |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | HideFineTuneButtons      | bool     | Hides the fine tuning buttons on either side of the legend text.                         |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
     /// | InnerDialFill		          | Brush    | The brush used to fill the inner dial.                                                   |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
@@ -110,6 +115,14 @@ namespace RotaryControl
 
         private double constOuterDialWidth = 150.0;
 
+        private double EndAngleInRadians
+        {
+            get
+            {
+                return (EndAngleInDegrees * Math.PI) / 180.0;
+            }
+        }
+
         private double StartAngleInRadians
         {
             get
@@ -118,13 +131,7 @@ namespace RotaryControl
             }
         }
 
-        private double EndAngleInRadians
-        {
-            get
-            {
-                return (EndAngleInDegrees * Math.PI) / 180.0;
-            }
-        }
+        private double maxValue;
 
         // Hardcoded to be the same as the actual controlwidth in DIU,
 
@@ -156,11 +163,11 @@ namespace RotaryControl
         {
             InitializeComponent();
 
-            MouseLeftButtonDown += RotaryControl_MouseLeftButtonDown;
-            MouseLeftButtonUp += RotaryControl_MouseLeftButtonUp;
-            MouseMove += RotaryControl_MouseMove;
+            MouseLeftButtonDown        += RotaryControl_MouseLeftButtonDown;
+            MouseLeftButtonUp          += RotaryControl_MouseLeftButtonUp;
+            MouseMove                  += RotaryControl_MouseMove;
+            PreviewMouseDown           += RotaryControl_PreviewMouseDown;
             PreviewMouseLeftButtonDown += RotaryControl_PreviewMouseLeftButtonDown;
-            PreviewMouseDown += RotaryControl_PreviewMouseDown;
 
             CreateControl();
         }
@@ -257,6 +264,8 @@ namespace RotaryControl
         /// </summary>
         private void CreateControl()
         {
+            maxValue = MinimumValue;
+
             // Remove everything apart from the ellipses.
 
             for (int i = _grid.Children.Count - 1; i >= 0; --i)
@@ -270,16 +279,15 @@ namespace RotaryControl
             _grid.Children.Add(_pointerArrow);
             _grid.Children.Add(_pointerAxle);
             _grid.Children.Add(_pointerRectangle);
-            _grid.Children.Add(_pointerStandard);
-            _grid.Children.Add(Legend);            
+            _grid.Children.Add(_pointerStandard);          
 
             _ellipseOuterDial.Fill = OuterDialFill;
             _ellipseOuterDial.Stroke = OuterDialBorder;
             _ellipseOuterDial.StrokeThickness = OuterDialBorderThickness;
 
-            _ellipseInnerDial.Width = InnerDialRadius * 2;
-            _ellipseInnerDial.Height = InnerDialRadius * 2;
             _ellipseInnerDial.Fill = InnerDialFill;
+            _ellipseInnerDial.Height = InnerDialRadius * 2;
+            _ellipseInnerDial.Width = InnerDialRadius * 2;
 
             Point pointCentre = new Point(100.0, 100.0);
 
@@ -294,9 +302,13 @@ namespace RotaryControl
 
                 foreach (var item in Segments)
                 {
-                    double segmentAngleInDegrees = (double)(item as RotaryControlSegment).AngleInDegrees;
+                    var rcs = item as RotaryControlSegment;
 
-                    Brush brush = (item as RotaryControlSegment).Fill;
+                    if (null == rcs)
+                    {
+                        continue;  // This is not the droid you are looking for.
+                    }
+                    double segmentAngleInDegrees = rcs.AngleInDegrees;
 
                     RotaryControlArc arc = new RotaryControlArc();
 
@@ -320,6 +332,11 @@ namespace RotaryControl
                 foreach (var item in Arcs)
                 {
                     RotaryControlArc arc = item as RotaryControlArc;
+
+                    if (null == arc)
+                    {
+                        continue;
+                    }
 
                     arc.Centre = pointCentre;
 
@@ -366,7 +383,7 @@ namespace RotaryControl
 
             // The angle in radians subtended by adjacent minor ticks.
 
-            double minorArc = majorArc / (double)(NumberOfMinorTicks + 1);
+            double minorArc = majorArc / (NumberOfMinorTicks + 1);
 
             // Angles are measured relative to 3 o'clock. Thus 7 o'clock is 120 degrees, etc.
 
@@ -374,14 +391,16 @@ namespace RotaryControl
 
             double labelsDialWidth = (LabelDialRadius > 0.0) ? 2.0 * LabelDialRadius : 1.2 * _ellipseOuterDial.Width;
 
+            maxValue = MinimumValue + MajorTickIncrement * (NumberOfMajorTicks - 1);
+
             for (int iMajor = 0; iMajor < NumberOfMajorTicks; ++iMajor, majorAngleInRadians += majorArc)
             {
                 // Major tick:
 
                 Polyline polyline = new Polyline();
 
-                double cosineMajorAngle = System.Math.Cos(majorAngleInRadians);
-                double sineMajorAngle = System.Math.Sin(majorAngleInRadians);
+                double cosineMajorAngle = Math.Cos(majorAngleInRadians);
+                double sineMajorAngle   = Math.Sin(majorAngleInRadians);
 
                 double x = ControlWidth / 2 + majorTickStart * sineMajorAngle;
                 double y = ControlWidth / 2 - majorTickStart * cosineMajorAngle;
@@ -443,7 +462,7 @@ namespace RotaryControl
 
                 Label label = new Label();
 
-                string text = (MinimumValue + (iMajor * MajorTickIncrement)).ToString();
+                string text = (MinimumValue + (iMajor * MajorTickIncrement)).ToString(CultureInfo.CurrentCulture);
 
                 label.Content = text;
                 label.FontSize = FontSize;
@@ -453,9 +472,7 @@ namespace RotaryControl
 
                 _labels.Add(label);
 
-                Size labelSize = MeasureString(text, label);
-
-                x = labelsDialWidth / 2.0 * sineMajorAngle;
+                x =  labelsDialWidth / 2.0 * sineMajorAngle;
                 y = -labelsDialWidth / 2.0 * cosineMajorAngle;
 
                 label.RenderTransform = new TranslateTransform(x, y);
@@ -527,15 +544,6 @@ namespace RotaryControl
 
             _markerTranslation.X = x;
             _markerTranslation.Y = y;
-
-            if (true == ControlEnabled)
-            {
-                _pointerAxle.Stroke = PointerAxleFillActive;
-            }
-            else
-            {
-                _pointerAxle.Stroke = PointerAxleFillInactive;
-            }
 
             _pointerAxle.Visibility = Visibility.Hidden;
             _pointerCircle.Visibility = Visibility.Hidden;
@@ -624,8 +632,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty ArcsProperty = DependencyProperty.Register("Arcs", typeof(System.Collections.IEnumerable), typeof(RotaryControl), new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnArcsChanged)));
-
+        public static readonly DependencyProperty ArcsProperty = DependencyProperty.Register("Arcs", 
+                                                                                             typeof(System.Collections.IEnumerable), 
+                                                                                             typeof(RotaryControl), 
+                                                                                             new FrameworkPropertyMetadata(null, OnArcsChanged));
         public System.Collections.IEnumerable Arcs
         {
             get
@@ -662,7 +672,7 @@ namespace RotaryControl
         public static readonly DependencyProperty ControlEnabledProperty = DependencyProperty.Register("ControlEnabled",
                                                                                                        typeof(bool),
                                                                                                        typeof(RotaryControl),
-                                                                                                       new FrameworkPropertyMetadata(false,
+                                                                                                       new FrameworkPropertyMetadata(false, 
                                                                                                                                      OnControlEnabledChanged));
         public bool ControlEnabled
         {
@@ -697,117 +707,14 @@ namespace RotaryControl
 
         #endregion
 
-        #region Legend Brush property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty LegendBrushProperty =
-            DependencyProperty.Register("LegendBrush",
-            typeof(Brush), typeof(RotaryControl),
-            new FrameworkPropertyMetadata(Brushes.Gray, new PropertyChangedCallback(OnLegendBrushChanged)));
-
-        public Brush LegendBrush
-        {
-            get { return (Brush)GetValue(LegendBrushProperty); }
-            set
-            {
-                SetValue(LegendBrushProperty, value);
-
-                Legend.Foreground = value;
-            }
-        }
-
-        private static void OnLegendBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnLegendBrushChanged(e);
-        }
-
-        protected virtual void OnLegendBrushChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                LegendBrush = (Brush)e.NewValue;
-            }
-        }
-
-        #endregion
-
-        #region Legend Font Size property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty LegendFontSizeProperty =
-            DependencyProperty.Register("LegendFontSize",
-            typeof(Double), typeof(RotaryControl),
-            new FrameworkPropertyMetadata(10.0, new PropertyChangedCallback(OnLegendFontSizeChanged)));
-
-        public Double LegendFontSize
-        {
-            get { return (Double)GetValue(LegendFontSizeProperty); }
-            set
-            {
-                SetValue(LegendFontSizeProperty, value);
-
-                Legend.FontSize = value;
-            }
-        }
-
-        private static void OnLegendFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnLegendFontSizeChanged(e);
-        }
-
-        protected virtual void OnLegendFontSizeChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                LegendFontSize = (Double)e.NewValue;
-            }
-        }
-
-        #endregion
-
-        #region Legend Text property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty LegendTextProperty = 
-            DependencyProperty.Register("LegendText", 
-            typeof(String), typeof(RotaryControl), 
-            new FrameworkPropertyMetadata("Legend", new PropertyChangedCallback(OnLegendTextChanged)));
-
-        public String LegendText
-        {
-            get { return (String) GetValue(LegendTextProperty); }
-            set
-            {
-                SetValue(LegendTextProperty, value);
-
-                Legend.Content = value;
-            }
-        }
-
-        private static void OnLegendTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnLegendTextChanged(e);
-        }
-
-        protected virtual void OnLegendTextChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                LegendText = (String)e.NewValue;
-            }
-        }
-
-        #endregion
-
         #region EndAngleInDegrees dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty EndAngleInDegreesProperty = DependencyProperty.Register("EndAngleInDegrees", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(150.0, new PropertyChangedCallback(OnEndAngleInDegreesChanged)));
-
+        public static readonly DependencyProperty EndAngleInDegreesProperty = DependencyProperty.Register("EndAngleInDegrees", 
+                                                                                                          typeof(double), 
+                                                                                                          typeof(RotaryControl), 
+                                                                                                          new FrameworkPropertyMetadata(150.0, OnEndAngleInDegreesChanged));
         public double EndAngleInDegrees
         {
             get
@@ -841,8 +748,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty FontBrushProperty = DependencyProperty.Register("FontBrush", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(System.Windows.Media.Brushes.Black, new PropertyChangedCallback(OnFontBrushChanged)));
-
+        public static readonly DependencyProperty FontBrushProperty = DependencyProperty.Register("FontBrush", 
+                                                                                                  typeof(Brush), 
+                                                                                                  typeof(RotaryControl), 
+                                                                                                  new FrameworkPropertyMetadata(Brushes.Black, OnFontBrushChanged));
         public Brush FontBrush
         {
             get
@@ -875,12 +784,51 @@ namespace RotaryControl
 
         #endregion
 
+        #region Hide fine tuning buttons dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty HideFineTuneButtonsProperty = DependencyProperty.Register("HideFineTuneButtons",
+                                                                                                            typeof(bool),
+                                                                                                            typeof(RotaryControl),
+                                                                                                            new FrameworkPropertyMetadata(false,
+                                                                                                                                          OnHideFineTuneButtonsChanged));
+        public bool HideFineTuneButtons
+        {
+            get { return (bool)GetValue(HideFineTuneButtonsProperty); }
+            set
+            {
+                SetValue(HideFineTuneButtonsProperty, value);
+
+                DecBtn.Visibility = (true == HideFineTuneButtons ? Visibility.Hidden : Visibility.Visible);
+                IncBtn.Visibility = (true == HideFineTuneButtons ? Visibility.Hidden : Visibility.Visible);
+            }
+        }
+
+        private static void OnHideFineTuneButtonsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnHideFineTuneButtonsChanged(e);
+        }
+
+        protected virtual void OnHideFineTuneButtonsChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                DecBtn.Visibility = (true == HideFineTuneButtons ? Visibility.Hidden : Visibility.Visible);
+                IncBtn.Visibility = (true == HideFineTuneButtons ? Visibility.Hidden : Visibility.Visible);
+            }
+        }
+
+        #endregion
+
         #region InnerDialFill dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty InnerDialFillProperty = DependencyProperty.Register("InnerDialFill", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(DefaultInnerDialFill(), new PropertyChangedCallback(OnInnerDialFillChanged)));
-
+        public static readonly DependencyProperty InnerDialFillProperty = DependencyProperty.Register("InnerDialFill", 
+                                                                                                      typeof(Brush), 
+                                                                                                      typeof(RotaryControl), 
+                                                                                                      new FrameworkPropertyMetadata(DefaultInnerDialFill(), OnInnerDialFillChanged));
         public Brush InnerDialFill
         {
             get
@@ -914,8 +862,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty InnerDialRadiusProperty = DependencyProperty.Register("InnerDialRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(100.0, new PropertyChangedCallback(OnInnerDialRadiusChanged)));
-
+        public static readonly DependencyProperty InnerDialRadiusProperty = DependencyProperty.Register("InnerDialRadius",
+                                                                                                        typeof(double), 
+                                                                                                        typeof(RotaryControl),
+                                                                                                        new FrameworkPropertyMetadata(100.0, OnInnerDialRadiusChanged));
         public double InnerDialRadius
         {
             get
@@ -949,8 +899,11 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty LabelDialRadiusProperty = DependencyProperty.Register("LabelDialRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnLabelDialRadiusChanged)));
-
+        public static readonly DependencyProperty LabelDialRadiusProperty = DependencyProperty.Register("LabelDialRadius", 
+                                                                                                        typeof(double), 
+                                                                                                        typeof(RotaryControl), 
+                                                                                                        new FrameworkPropertyMetadata(0.0, 
+                                                                                                        OnLabelDialRadiusChanged));
         public double LabelDialRadius
         {
             get
@@ -980,12 +933,117 @@ namespace RotaryControl
 
         #endregion
 
+        #region Legend Brush property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty LegendBrushProperty = DependencyProperty.Register("LegendBrush",
+                                                                                                    typeof(Brush), 
+                                                                                                    typeof(RotaryControl),
+                                                                                                    new FrameworkPropertyMetadata(Brushes.Gray, 
+                                                                                                    OnLegendBrushChanged));
+        public Brush LegendBrush
+        {
+            get { return (Brush)GetValue(LegendBrushProperty); }
+            set
+            {
+                SetValue(LegendBrushProperty, value);
+
+                Legend.Foreground = value;
+            }
+        }
+
+        private static void OnLegendBrushChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnLegendBrushChanged(e);
+        }
+
+        protected virtual void OnLegendBrushChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                LegendBrush = (Brush)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region Legend Font Size property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty LegendFontSizeProperty = DependencyProperty.Register("LegendFontSize",
+                                                                                                       typeof(Double), 
+                                                                                                       typeof(RotaryControl),
+                                                                                                       new FrameworkPropertyMetadata(10.0, OnLegendFontSizeChanged));
+        public Double LegendFontSize
+        {
+            get { return (Double)GetValue(LegendFontSizeProperty); }
+            set
+            {
+                SetValue(LegendFontSizeProperty, value);
+
+                Legend.FontSize = value;
+            }
+        }
+
+        private static void OnLegendFontSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnLegendFontSizeChanged(e);
+        }
+
+        protected virtual void OnLegendFontSizeChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                LegendFontSize = (Double)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region Legend Text property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty LegendTextProperty = DependencyProperty.Register("LegendText",
+                                                                                                   typeof(String), 
+                                                                                                   typeof(RotaryControl),
+                                                                                                   new FrameworkPropertyMetadata("Legend", OnLegendTextChanged));
+        public String LegendText
+        {
+            get { return (String)GetValue(LegendTextProperty); }
+            set
+            {
+                SetValue(LegendTextProperty, value);
+
+                Legend.Content = value;
+            }
+        }
+
+        private static void OnLegendTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnLegendTextChanged(e);
+        }
+
+        protected virtual void OnLegendTextChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                LegendText = (String)e.NewValue;
+            }
+        }
+
+        #endregion
+
         #region MajorTickBrush dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MajorTickBrushProperty = DependencyProperty.Register("MajorTickBrush", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(Brushes.White, new PropertyChangedCallback(OnMajorTickBrushChanged)));
-
+        public static readonly DependencyProperty MajorTickBrushProperty = DependencyProperty.Register("MajorTickBrush", 
+                                                                                                       typeof(Brush), 
+                                                                                                       typeof(RotaryControl), 
+                                                                                                       new FrameworkPropertyMetadata(Brushes.White, OnMajorTickBrushChanged));
         public Brush MajorTickBrush
         {
             get
@@ -1019,8 +1077,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MajorTickDialRadiusProperty = DependencyProperty.Register("MajorTickDialRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnMajorTickDialRadiusChanged)));
-
+        public static readonly DependencyProperty MajorTickDialRadiusProperty = DependencyProperty.Register("MajorTickDialRadius", 
+                                                                                                            typeof(double), 
+                                                                                                            typeof(RotaryControl), 
+                                                                                                            new FrameworkPropertyMetadata(0.0, OnMajorTickDialRadiusChanged));
         public double MajorTickDialRadius
         {
             get
@@ -1054,8 +1114,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MajorTickIncrementProperty = DependencyProperty.Register("MajorTickIncrement", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(10.0, new PropertyChangedCallback(OnMajorTickIncrementChanged)));
-
+        public static readonly DependencyProperty MajorTickIncrementProperty = DependencyProperty.Register("MajorTickIncrement", 
+                                                                                                           typeof(double), 
+                                                                                                           typeof(RotaryControl), 
+                                                                                                           new FrameworkPropertyMetadata(10.0, OnMajorTickIncrementChanged));
         public double MajorTickIncrement
         {
             get
@@ -1089,8 +1151,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MajorTickLengthProperty = DependencyProperty.Register("MajorTickLength", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnMajorTickLengthChanged)));
-
+        public static readonly DependencyProperty MajorTickLengthProperty = DependencyProperty.Register("MajorTickLength", 
+                                                                                                        typeof(double), 
+                                                                                                        typeof(RotaryControl), 
+                                                                                                        new FrameworkPropertyMetadata(0.0, OnMajorTickLengthChanged));
         public double MajorTickLength
         {
             get
@@ -1124,8 +1188,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MajorTickWidthProperty = DependencyProperty.Register("MajorTickWidth", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(1.0, new PropertyChangedCallback(OnMajorTickWidthChanged)));
-
+        public static readonly DependencyProperty MajorTickWidthProperty = DependencyProperty.Register("MajorTickWidth", 
+                                                                                                       typeof(double), 
+                                                                                                       typeof(RotaryControl), 
+                                                                                                       new FrameworkPropertyMetadata(1.0, OnMajorTickWidthChanged));
         public double MajorTickWidth
         {
             get
@@ -1159,8 +1225,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MinimumValueProperty = DependencyProperty.Register("MinimumValue", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnMinimumValueChanged)));
-
+        public static readonly DependencyProperty MinimumValueProperty = DependencyProperty.Register("MinimumValue", 
+                                                                                                     typeof(double), 
+                                                                                                     typeof(RotaryControl), 
+                                                                                                     new FrameworkPropertyMetadata(0.0, OnMinimumValueChanged));
         public double MinimumValue
         {
             get
@@ -1194,8 +1262,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MinorTickBrushProperty = DependencyProperty.Register("MinorTickBrush", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(Brushes.Blue, new PropertyChangedCallback(OnMinorTickBrushChanged)));
-
+        public static readonly DependencyProperty MinorTickBrushProperty = DependencyProperty.Register("MinorTickBrush", 
+                                                                                                       typeof(Brush), 
+                                                                                                       typeof(RotaryControl), 
+                                                                                                       new FrameworkPropertyMetadata(Brushes.Blue, OnMinorTickBrushChanged));
         public Brush MinorTickBrush
         {
             get
@@ -1229,8 +1299,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MinorTickDialRadiusProperty = DependencyProperty.Register("MinorTickDialRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnMinorTickDialRadiusChanged)));
-
+        public static readonly DependencyProperty MinorTickDialRadiusProperty = DependencyProperty.Register("MinorTickDialRadius", 
+                                                                                                            typeof(double), 
+                                                                                                            typeof(RotaryControl), 
+                                                                                                            new FrameworkPropertyMetadata(0.0, OnMinorTickDialRadiusChanged));
         public double MinorTickDialRadius
         {
             get
@@ -1264,8 +1336,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty MinorTickLengthProperty = DependencyProperty.Register("MinorTickLength", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnMinorTickLengthChanged)));
-
+        public static readonly DependencyProperty MinorTickLengthProperty = DependencyProperty.Register("MinorTickLength", 
+                                                                                                        typeof(double), 
+                                                                                                        typeof(RotaryControl), 
+                                                                                                        new FrameworkPropertyMetadata(0.0, OnMinorTickLengthChanged));
         public double MinorTickLength
         {
             get
@@ -1299,8 +1373,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty NumberOfMajorTicksProperty = DependencyProperty.Register("NumberOfMajorTicks", typeof(int), typeof(RotaryControl), new FrameworkPropertyMetadata(10, new PropertyChangedCallback(OnNumberOfMajorTicksChanged)));
-
+        public static readonly DependencyProperty NumberOfMajorTicksProperty = DependencyProperty.Register("NumberOfMajorTicks", 
+                                                                                                           typeof(int), 
+                                                                                                           typeof(RotaryControl),
+                                                                                                           new FrameworkPropertyMetadata(10, OnNumberOfMajorTicksChanged));
         public int NumberOfMajorTicks
         {
             get
@@ -1334,8 +1410,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty NumberOfMinorTicksProperty = DependencyProperty.Register("NumberOfMinorTicks", typeof(int), typeof(RotaryControl), new FrameworkPropertyMetadata(4, new PropertyChangedCallback(OnNumberOfMinorTicksChanged)));
-
+        public static readonly DependencyProperty NumberOfMinorTicksProperty = DependencyProperty.Register("NumberOfMinorTicks", 
+                                                                                                           typeof(int), 
+                                                                                                           typeof(RotaryControl),
+                                                                                                           new FrameworkPropertyMetadata(4, OnNumberOfMinorTicksChanged));
         public int NumberOfMinorTicks
         {
             get
@@ -1369,8 +1447,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty OuterDialBorderProperty = DependencyProperty.Register("OuterDialBorder", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(Brushes.Gainsboro, new PropertyChangedCallback(OnOuterDialBorderChanged)));
-
+        public static readonly DependencyProperty OuterDialBorderProperty = DependencyProperty.Register("OuterDialBorder", 
+                                                                                                        typeof(Brush), 
+                                                                                                        typeof(RotaryControl), 
+                                                                                                        new FrameworkPropertyMetadata(Brushes.Gainsboro, OnOuterDialBorderChanged));
         public Brush OuterDialBorder
         {
             get
@@ -1404,11 +1484,11 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty OuterDialBorderThicknessProperty = DependencyProperty.Register("OuterDialBorderThickness", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(4.0, new PropertyChangedCallback(OnOuterDialBorderThicknessChanged)));
-
-        private const double constMinimumOuterDialBorderThickness = 0.0;
-        private const double constMaximumOuterDialBorderThickness = 30.0;
-
+        public static readonly DependencyProperty OuterDialBorderThicknessProperty = DependencyProperty.Register("OuterDialBorderThickness", 
+                                                                                                                typeof(double), 
+                                                                                                                typeof(RotaryControl), 
+                                                                                                                new FrameworkPropertyMetadata(4.0, 
+                                                                                                                                              OnOuterDialBorderThicknessChanged));
         public double OuterDialBorderThickness
         {
             get
@@ -1417,7 +1497,7 @@ namespace RotaryControl
             }
             set
             {
-                SetValue(OuterDialBorderThicknessProperty, Math.Min(Math.Max(value, constMinimumOuterDialBorderThickness), constMaximumOuterDialBorderThickness));
+                SetValue(OuterDialBorderThicknessProperty, Math.Min(Math.Max(value, Constants.constMinimumOuterDialBorderThickness), Constants.constMaximumOuterDialBorderThickness));
             }
         }
 
@@ -1442,8 +1522,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty OuterDialFillProperty = DependencyProperty.Register("OuterDialFill", typeof(Brush), typeof(RotaryControl), new FrameworkPropertyMetadata(Brushes.SteelBlue, new PropertyChangedCallback(OnOuterDialFillChanged)));
-
+        public static readonly DependencyProperty OuterDialFillProperty = DependencyProperty.Register("OuterDialFill", 
+                                                                                                      typeof(Brush), 
+                                                                                                      typeof(RotaryControl), 
+                                                                                                      new FrameworkPropertyMetadata(Brushes.SteelBlue, OnOuterDialFillChanged));
         public Brush OuterDialFill
         {
             get
@@ -1473,12 +1555,86 @@ namespace RotaryControl
 
         #endregion
 
+        #region PointerAxleFillActive dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty PointerAxleFillActiveProperty = DependencyProperty.Register("PointerAxleFillActive", 
+                                                                                                              typeof(Brush), 
+                                                                                                              typeof(RotaryControl), 
+                                                                                                              new FrameworkPropertyMetadata(Brushes.Green, 
+                                                                                                                                            OnPointerAxleFillActiveChanged));
+        public Brush PointerAxleFillActive
+        {
+            get
+            {
+                return (Brush)GetValue(PointerAxleFillActiveProperty);
+            }
+            set
+            {
+                SetValue(PointerAxleFillActiveProperty, value);
+            }
+        }
+
+        private static void OnPointerAxleFillActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnPointerAxleFillActiveChanged(e);
+        }
+
+        protected virtual void OnPointerAxleFillActiveChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                PointerAxleFillActive = (Brush)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region PointerAxleFillInactive dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty PointerAxleFillInactiveProperty = DependencyProperty.Register("PointerAxleFillInactive", 
+                                                                                                                typeof(Brush), 
+                                                                                                                typeof(RotaryControl), 
+                                                                                                                new FrameworkPropertyMetadata(Brushes.Red, 
+                                                                                                                                              OnPointerAxleFillInactiveChanged));
+        public Brush PointerAxleFillInactive
+        {
+            get
+            {
+                return (Brush)GetValue(PointerAxleFillInactiveProperty);
+            }
+            set
+            {
+                SetValue(PointerAxleFillInactiveProperty, value);
+            }
+        }
+
+        private static void OnPointerAxleFillInactiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnPointerAxleFillInactiveChanged(e);
+        }
+
+        protected virtual void OnPointerAxleFillInactiveChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (null != e.NewValue)
+            {
+                PointerAxleFillInactive = (Brush)e.NewValue;
+            }
+        }
+
+        #endregion
+
         #region PointerAxleRadius dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerAxleRadiusProperty = DependencyProperty.Register("PointerAxleRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(3.0, new PropertyChangedCallback(OnPointerAxleRadiusChanged)));
-
+        public static readonly DependencyProperty PointerAxleRadiusProperty = DependencyProperty.Register("PointerAxleRadius", 
+                                                                                                          typeof(double), 
+                                                                                                          typeof(RotaryControl), 
+                                                                                                          new FrameworkPropertyMetadata(3.0,OnPointerAxleRadiusChanged));
         public double PointerAxleRadius
         {
             get
@@ -1513,87 +1669,15 @@ namespace RotaryControl
 
         #endregion
 
-        #region PointerAxleFillActive dependency property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerAxleFillActiveProperty = DependencyProperty.Register("PointerAxleFillActive",
-                                                                                                              typeof(Brush),
-                                                                                                              typeof(RotaryControl),
-                                                                                                              new FrameworkPropertyMetadata(Brushes.Green,
-                                                                                                                                            new PropertyChangedCallback(OnPointerAxleFillActiveChanged)));
-        public Brush PointerAxleFillActive
-        {
-            get
-            {
-                return (Brush)GetValue(PointerAxleFillActiveProperty);
-            }
-            set
-            {
-                SetValue(PointerAxleFillActiveProperty, value);
-            }
-        }
-
-        private static void OnPointerAxleFillActiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnPointerAxleFillActiveChanged(e);
-        }
-
-        protected virtual void OnPointerAxleFillActiveChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                PointerAxleFillActive = (Brush)e.NewValue;
-            }
-        }
-
-        #endregion
-
-        #region PointerAxleFillInactive dependency property
-
-        [Bindable(true)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerAxleFillInactiveProperty = DependencyProperty.Register("PointerAxleFillInactive",
-                                                                                                                typeof(Brush),
-                                                                                                                typeof(RotaryControl),
-                                                                                                                new FrameworkPropertyMetadata(Brushes.Red,
-                                                                                                                                              new PropertyChangedCallback(OnPointerAxleFillInactiveChanged)));
-        public Brush PointerAxleFillInactive
-        {
-            get
-            {
-                return (Brush)GetValue(PointerAxleFillInactiveProperty);
-            }
-            set
-            {
-                SetValue(PointerAxleFillInactiveProperty, value);
-            }
-        }
-
-        private static void OnPointerAxleFillInactiveChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnPointerAxleFillInactiveChanged(e);
-        }
-
-        protected virtual void OnPointerAxleFillInactiveChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-                PointerAxleFillInactive = (Brush)e.NewValue;
-            }
-        }
-
-        #endregion
-
         #region PointerFill dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerFillProperty = DependencyProperty.Register("PointerFill",
-                                                                                                    typeof(Brush),
-                                                                                                    typeof(RotaryControl),
-                                                                                                    new FrameworkPropertyMetadata(DefaultPointerFill(),
-                                                                                                    new PropertyChangedCallback(OnPointerFillChanged)));
+        public static readonly DependencyProperty PointerFillProperty = DependencyProperty.Register("PointerFill", 
+                                                                                                    typeof(Brush), 
+                                                                                                    typeof(RotaryControl), 
+                                                                                                    new FrameworkPropertyMetadata(DefaultPointerFill(), 
+                                                                                                                                  OnPointerFillChanged));
         public Brush PointerFill
         {
             get
@@ -1604,10 +1688,10 @@ namespace RotaryControl
             {
                 SetValue(PointerFillProperty, value);
 
-                _pointerArrow.Fill = PointerFill;
-                _pointerCircle.Fill = PointerFill;
+                _pointerArrow.Fill     = PointerFill;
+                _pointerCircle.Fill    = PointerFill;
                 _pointerRectangle.Fill = PointerFill;
-                _pointerStandard.Fill = PointerFill;
+                _pointerStandard.Fill  = PointerFill; 
             }
         }
 
@@ -1630,8 +1714,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerLengthProperty = DependencyProperty.Register("PointerLength", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnPointerLengthChanged)));
-
+        public static readonly DependencyProperty PointerLengthProperty = DependencyProperty.Register("PointerLength", 
+                                                                                                      typeof(double), 
+                                                                                                      typeof(RotaryControl), 
+                                                                                                      new FrameworkPropertyMetadata(0.0, OnPointerLengthChanged));
         public double PointerLength
         {
             get
@@ -1665,8 +1751,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerTypeProperty = DependencyProperty.Register("PointerType", typeof(string), typeof(RotaryControl), new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnPointerTypeChanged)));
-
+        public static readonly DependencyProperty PointerTypeProperty = DependencyProperty.Register("PointerType", 
+                                                                                                    typeof(string), 
+                                                                                                    typeof(RotaryControl), 
+                                                                                                    new FrameworkPropertyMetadata(null, OnPointerTypeChanged));
         public string PointerType
         {
             get
@@ -1700,8 +1788,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty PointerWidthProperty = DependencyProperty.Register("PointerWidth", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(4.0, new PropertyChangedCallback(OnPointerWidthChanged)));
-
+        public static readonly DependencyProperty PointerWidthProperty = DependencyProperty.Register("PointerWidth", 
+                                                                                                     typeof(double), 
+                                                                                                     typeof(RotaryControl), 
+                                                                                                     new FrameworkPropertyMetadata(4.0, OnPointerWidthChanged));
         public double PointerWidth
         {
             get
@@ -1740,8 +1830,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty SegmentRadiusProperty = DependencyProperty.Register("SegmentRadius", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnSegmentRadiusChanged)));
-
+        public static readonly DependencyProperty SegmentRadiusProperty = DependencyProperty.Register("SegmentRadius", 
+                                                                                                      typeof(double), 
+                                                                                                      typeof(RotaryControl), 
+                                                                                                      new FrameworkPropertyMetadata(0.0, OnSegmentRadiusChanged));
         public double SegmentRadius
         {
             get
@@ -1775,8 +1867,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty SegmentsProperty = DependencyProperty.Register("Segments", typeof(System.Collections.IEnumerable), typeof(RotaryControl), new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnSegmentsChanged)));
-
+        public static readonly DependencyProperty SegmentsProperty = DependencyProperty.Register("Segments", 
+                                                                                                 typeof(System.Collections.IEnumerable), 
+                                                                                                 typeof(RotaryControl), 
+                                                                                                 new FrameworkPropertyMetadata(null, OnSegmentsChanged));
         public System.Collections.IEnumerable Segments
         {
             get
@@ -1810,8 +1904,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty SegmentThicknessProperty = DependencyProperty.Register("SegmentThickness", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnSegmentThicknessChanged)));
-
+        public static readonly DependencyProperty SegmentThicknessProperty = DependencyProperty.Register("SegmentThickness", 
+                                                                                                         typeof(double), 
+                                                                                                         typeof(RotaryControl), 
+                                                                                                         new FrameworkPropertyMetadata(0.0, OnSegmentThicknessChanged));
         public double SegmentThickness
         {
             get
@@ -1851,7 +1947,7 @@ namespace RotaryControl
         public static readonly DependencyProperty ShowLabelsProperty = DependencyProperty.Register("ShowLabels",
                                                                                                    typeof(bool), 
                                                                                                    typeof(RotaryControl), 
-                                                                                                   new FrameworkPropertyMetadata(true, new PropertyChangedCallback(OnShowLabelsChanged)));
+                                                                                                   new FrameworkPropertyMetadata(true, OnShowLabelsChanged));
         public bool ShowLabels
         {
             get
@@ -1888,9 +1984,8 @@ namespace RotaryControl
         public static readonly DependencyProperty SizeProperty = DependencyProperty.Register("Size",
                                                                                              typeof(double),
                                                                                              typeof(RotaryControl),
-                                                                                             new FrameworkPropertyMetadata(0.0,
-                                                                                                                           new PropertyChangedCallback(OnSizeChanged)));
-
+                                                                                             new FrameworkPropertyMetadata(0.0, 
+                                                                                                                           OnSizeChanged));
         public double Size
         {
             get
@@ -1918,14 +2013,16 @@ namespace RotaryControl
             }
         }
 
-        #endregion    
-    
+        #endregion
+
         #region StartAngleInDegrees dependency property
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty StartAngleInDegreesProperty = DependencyProperty.Register("StartAngleInDegrees", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(210.0, new PropertyChangedCallback(OnStartAngleInDegreesChanged)));
-
+        public static readonly DependencyProperty StartAngleInDegreesProperty = DependencyProperty.Register("StartAngleInDegrees", 
+                                                                                                            typeof(double), 
+                                                                                                            typeof(RotaryControl), 
+                                                                                                            new FrameworkPropertyMetadata(210.0, OnStartAngleInDegreesChanged));
         public double StartAngleInDegrees
         {
             get
@@ -1959,8 +2056,10 @@ namespace RotaryControl
 
         [Bindable(true)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(double), typeof(RotaryControl), new FrameworkPropertyMetadata(0.0, new PropertyChangedCallback(OnValueChanged)));
-
+        public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", 
+                                                                                              typeof(double), 
+                                                                                              typeof(RotaryControl), 
+                                                                                              new FrameworkPropertyMetadata(0.0, OnValueChanged));
         public double Value
         {
             get
@@ -1995,6 +2094,38 @@ namespace RotaryControl
         #endregion Dependency Properties
 
         #region Event Handlers
+
+        /// <summary>
+        /// Handle Decrement button clicked event.
+        /// </summary>
+        /// <remarks>
+        /// Decrements the current value.
+        /// </remarks>
+        /// <param name="sender">UI element object triggering the event (Button).</param>
+        /// <param name="e">RoutedEventArgs object.</param>
+        private void OnDecrementBtnClkd(object sender, RoutedEventArgs e)
+        {
+            if (Value > MinimumValue)
+            {
+                --Value;
+            }
+        }
+
+        /// <summary>
+        /// Handle Increment button clicked event.
+        /// </summary>
+        /// <remarks>
+        /// Increments the current value.
+        /// </remarks>
+        /// <param name="sender">UI element object triggering the event (Button).</param>
+        /// <param name="e">RoutedEventArgs object.</param>
+        private void OnIncrementBtnClkd(object sender, RoutedEventArgs e)
+        {
+            if (Value < maxValue)
+            {
+                ++Value;
+            }
+        }
 
         private void RotaryControl_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {

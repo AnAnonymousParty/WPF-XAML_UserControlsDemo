@@ -5,7 +5,7 @@ https://www.codeproject.com/Articles/4044072/A-WPF-Rotary-Control.
 Additional properties were added to allow setting and styling a legend for the 
 control. See RotaryControl,xaml.cs for a list of all the available properties.      -->
     
-<UserControl d:DesignHeight="200" 
+<UserControl d:DesignHeight="210" 
              d:DesignWidth="200" 
              mc:Ignorable="d"
              x:Class="RotaryControl.RotaryControl"
@@ -24,83 +24,224 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
             </LinearGradientBrush>
         </ResourceDictionary>
     </UserControl.Resources>
-    
-    <Grid Name="_grid" Width="200" Height="200" Background="Transparent">
-        <Ellipse x:Name="_ellipseOuterDial" Width="150" Height="150" Stroke="Gainsboro" StrokeThickness="4" Fill="SteelBlue" />
 
-        <Ellipse x:Name="_ellipseInnerDial" Width="100" Height="100" Panel.ZIndex="98"/>
-
-        <Ellipse Name="_pointerCircle" Width="20" Height="20" Stroke="Gainsboro" StrokeThickness="0" Panel.ZIndex="99">
-            <Ellipse.RenderTransform>
-                <TransformGroup>
-                    <TranslateTransform x:Name="_markerTranslation" X="35" Y="0"/>
-                </TransformGroup>
-            </Ellipse.RenderTransform>
-            <Ellipse.Fill>
-                <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
-                    <GradientStop Color="Red" Offset="0"/>
-                    <GradientStop Color="DarkRed" Offset="1.0"/>
-                </LinearGradientBrush>
-            </Ellipse.Fill>
-        </Ellipse>
-
-        <Path Name="_pointerStandard" Stroke="Red" StrokeThickness="0" Fill="Red" Panel.ZIndex="100">
-            <Path.Data>
-                <PathGeometry>
-                    <PathFigure StartPoint="100,100">
-                        <LineSegment Point="100,98" x:Name="_pointerTopLeft"/>
-                        <LineSegment Point="140,98" x:Name="_pointerTopRight"/>
-                        <LineSegment Point="150,100" x:Name="_pointerTip"/>
-                        <LineSegment Point="140,102" x:Name="_pointerBottomRight"/>
-                        <LineSegment Point="100,102" x:Name="_pointerBottomLeft"/>
-                        <LineSegment Point="100,100"/>
-                    </PathFigure>
-                </PathGeometry>
-            </Path.Data>
-        </Path>
-
-        <Path Name="_pointerArrow" Stroke="Red" StrokeThickness="0" Fill="Red" Panel.ZIndex="100">
-            <Path.Data>
-                <PathGeometry>
-                    <PathFigure StartPoint="100,100">
-                        <LineSegment Point="100,98" x:Name="_pointerArrowTopLeft"/>
-                        <LineSegment Point="150,100" x:Name="_pointerArrowTip"/>
-                        <LineSegment Point="100,102" x:Name="_pointerArrowBottomLeft"/>
-                        <LineSegment Point="100,100"/>
-                    </PathFigure>
-                </PathGeometry>
-            </Path.Data>
-        </Path>
-
-        <Path Name="_pointerRectangle" Stroke="Red" StrokeThickness="0" Fill="Red" Panel.ZIndex="100">
-            <Path.Data>
-                <PathGeometry>
-                    <PathFigure StartPoint="100,100">
-                        <LineSegment Point="100,98" x:Name="_pointerRectangleTopLeft"/>
-                        <LineSegment Point="150,98" x:Name="_pointerRectangleTopRight"/>
-                        <LineSegment Point="150,102" x:Name="_pointerRectangleBottomRight"/>
-                        <LineSegment Point="100,102" x:Name="_pointerRectangleBottomLeft"/>
-                        <LineSegment Point="100,100"/>
-                    </PathFigure>
-                </PathGeometry>
-            </Path.Data>
-        </Path>
-
-        <Path Name="_pointerAxle" Stroke="#00FF00" StrokeThickness="10" Fill="#00FFFF" Panel.ZIndex="101">
-            <Path.Data>
-                <PathGeometry>
-                    <PathFigure StartPoint="100,97" x:Name="_pointerPathFigure">
-                        <ArcSegment Point="100,103" Size="3,3" SweepDirection="Clockwise" IsLargeArc="True" x:Name="_pointerAxleArc1"/>
-                        <ArcSegment Point="100,97" Size="3,3" SweepDirection="Clockwise" IsLargeArc="True" x:Name="_pointerAxleArc2"/>
-                    </PathFigure>
-                </PathGeometry>
-            </Path.Data>
-        </Path>       
+    <!-- Container for the entire control. -->
+    <StackPanel DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                Height="220"
+                HorizontalAlignment="Center"
+                Orientation="Vertical"
+                Width="200">
         
-        <Label Background="Transparent" 
-               Foreground="White" 
-               HorizontalAlignment="Center" 
-               Name="Legend" 
-               VerticalAlignment="Bottom"/>
-    </Grid>
+        <!-- Container for the rotary control elements. All element coordinates are referenced to the
+             dimensions of this container.                                                            -->    
+        <Grid Background="Transparent"
+              Height="200" 
+              HorizontalAlignment="Center"
+              Name="_grid" 
+              VerticalAlignment="Top"
+              Width="200">
+        
+            <!-- Draws the oter dial, where tick marks and labels may appear. -->
+            <Ellipse x:Name="_ellipseOuterDial" 
+                     Width="150" 
+                     Height="150" 
+                     Stroke="Gainsboro" 
+                     StrokeThickness="4" 
+                     Fill="SteelBlue" />
+
+            <!-- Draws the inner dial 'knob'. -->
+            <Ellipse x:Name="_ellipseInnerDial" Width="100" Height="100" Panel.ZIndex="98"/>
+
+            <!-- Draws the 'circle' style pointer. -->
+            <Ellipse Name="_pointerCircle" Width="20" Height="20" Stroke="Gainsboro" StrokeThickness="0" Panel.ZIndex="99">
+                <Ellipse.RenderTransform>
+                    <TransformGroup>
+                        <TranslateTransform x:Name="_markerTranslation" X="35" Y="0"/>
+                    </TransformGroup>
+                </Ellipse.RenderTransform>
+                <Ellipse.Fill>
+                    <LinearGradientBrush EndPoint="0.5,0" StartPoint="0.5,1">
+                        <GradientStop Color="Red" Offset="0"/>
+                        <GradientStop Color="DarkRed" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <!-- Drwas the 'standard' line style pointer. -->
+            <Path Name="_pointerStandard" Stroke="#000000" StrokeThickness="0" Panel.ZIndex="100">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="100,100">
+                            <LineSegment Point="100,98" x:Name="_pointerTopLeft"/>
+                            <LineSegment Point="140,98" x:Name="_pointerTopRight"/>
+                            <LineSegment Point="150,100" x:Name="_pointerTip"/>
+                            <LineSegment Point="140,102" x:Name="_pointerBottomRight"/>
+                            <LineSegment Point="100,102" x:Name="_pointerBottomLeft"/>
+                            <LineSegment Point="100,100"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+
+            <!-- Draws the 'arrow' style pointer. -->
+            <Path Name="_pointerArrow" Stroke="Red" StrokeThickness="0" Fill="Red" Panel.ZIndex="100">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="100,100">
+                            <LineSegment Point="100,98" x:Name="_pointerArrowTopLeft"/>
+                            <LineSegment Point="150,100" x:Name="_pointerArrowTip"/>
+                            <LineSegment Point="100,102" x:Name="_pointerArrowBottomLeft"/>
+                            <LineSegment Point="100,100"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+
+            <!-- Draws the 'rectangular' style pointer. -->
+            <Path Name="_pointerRectangle" Stroke="Red" StrokeThickness="0" Fill="Red" Panel.ZIndex="100">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="100,100">
+                            <LineSegment Point="100,98" x:Name="_pointerRectangleTopLeft"/>
+                            <LineSegment Point="150,98" x:Name="_pointerRectangleTopRight"/>
+                            <LineSegment Point="150,102" x:Name="_pointerRectangleBottomRight"/>
+                            <LineSegment Point="100,102" x:Name="_pointerRectangleBottomLeft"/>
+                            <LineSegment Point="100,100"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+
+            <!-- Draws the axle graphic in the center of the control. -->
+            <Path Name="_pointerAxle" Stroke="#00FF00" StrokeThickness="10" Panel.ZIndex="101">
+                <Path.Data>
+                    <PathGeometry>
+                        <PathFigure StartPoint="100,97" x:Name="_pointerPathFigure">
+                            <ArcSegment Point="100,103" Size="3,3" SweepDirection="Clockwise" IsLargeArc="True" x:Name="_pointerAxleArc1"/>
+                            <ArcSegment Point="100,97"  Size="3,3" SweepDirection="Clockwise" IsLargeArc="True" x:Name="_pointerAxleArc2"/>
+                        </PathFigure>
+                    </PathGeometry>
+                </Path.Data>
+            </Path>
+        </Grid>
+
+        <!-- Container for Increment/Decrement buttons and control legend text. -->
+        <StackPanel Background="Transparent" 
+                    Height="Auto" 
+                    HorizontalAlignment="Center"
+                    Margin="0,-25,0,0"    
+                    Orientation="Horizontal" 
+                    VerticalAlignment="Center"
+                    Width="Auto"
+                    x:Name="LegendContainer">
+            <Button Background="Transparent" 
+                    BorderBrush="Transparent"
+                    Click="OnDecrementBtnClkd"
+                    x:Name="DecBtn">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Opacity" Value="1.0" />
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="Background" Value="Transparent" />
+                                <Setter Property="Opacity" Value="1.0" />
+                            </Trigger>                            
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <Image Height="16" 
+                       Width="16"
+                       x:Name="MinusBtn">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/GreenMinusBtn_160X161.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/RedMinusBtn_160X162.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Button>
+            <Label Background="Transparent" 
+                    Foreground="White" 
+                    VerticalContentAlignment="Top"
+                    x:Name="Legend" />
+            <Button Background="Transparent"
+                    BorderBrush="Transparent"
+                    Click="OnIncrementBtnClkd"
+                    x:Name="IncBtn">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="1">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="Opacity" Value="1.0" />
+                                </Trigger>   
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                <Image Height="16"  
+                       Width="16"
+                       x:Name="PlusBtn">
+                    <Image.Style>
+                        <Style TargetType="{x:Type Image}">
+                            <Style.Triggers>                               
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="true" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/GreenPlusBtn_160X161.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ControlEnabled}" Value="false" />
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.Setters>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/RedPlusBtn_160X159.png"/>
+                                    </MultiDataTrigger.Setters>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </Button>
+        </StackPanel>
+    </StackPanel>
 </UserControl>
