@@ -5,7 +5,7 @@ https://www.codeproject.com/Articles/4044072/A-WPF-Rotary-Control.
 Additional properties were added to allow setting and styling a legend for the 
 control. See RotaryControl,xaml.cs for a list of all the available properties.      -->
     
-<UserControl d:DesignHeight="210" 
+<UserControl d:DesignHeight="212" 
              d:DesignWidth="200" 
              mc:Ignorable="d"
              x:Class="RotaryControl.RotaryControl"
@@ -53,10 +53,15 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
             <Ellipse x:Name="_ellipseInnerDial" Width="100" Height="100" Panel.ZIndex="98"/>
 
             <!-- Draws the 'circle' style pointer. -->
-            <Ellipse Name="_pointerCircle" Width="20" Height="20" Stroke="Gainsboro" StrokeThickness="0" Panel.ZIndex="99">
+            <Ellipse Name="_pointerCircle" 
+                     Width="20" 
+                     Height="20" 
+                     Stroke="Gainsboro" 
+                     StrokeThickness="0" 
+                     Panel.ZIndex="99">
                 <Ellipse.RenderTransform>
                     <TransformGroup>
-                        <TranslateTransform x:Name="_markerTranslation" X="35" Y="0"/>
+                        <TranslateTransform x:Name="_markerTranslation" X="20" Y="0"/>
                     </TransformGroup>
                 </Ellipse.RenderTransform>
                 <Ellipse.Fill>
@@ -161,8 +166,8 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
                         </Style.Triggers>
                     </Style>
                 </Button.Style>
-                <Image Height="16" 
-                       Width="16"
+                <Image Height="24" 
+                       Width="24"
                        x:Name="MinusBtn">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -172,7 +177,7 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
                                         <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
-                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/GreenMinusBtn_160X161.png"/>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/DownArrowGreen_64X64.png"/>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
@@ -180,7 +185,7 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
                                         <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
-                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/RedMinusBtn_160X162.png"/>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/DownArrowRed_64X64.png"/>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                             </Style.Triggers>
@@ -215,8 +220,8 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
                             </Style.Triggers>
                         </Style>
                     </Button.Style>
-                <Image Height="16"  
-                       Width="16"
+                <Image Height="24"  
+                       Width="24"
                        x:Name="PlusBtn">
                     <Image.Style>
                         <Style TargetType="{x:Type Image}">
@@ -226,7 +231,7 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
                                         <Condition Binding="{Binding ControlEnabled}" Value="true" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
-                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/GreenPlusBtn_160X161.png"/>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/UpArrowGreen_64X64.png"/>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
@@ -234,7 +239,7 @@ control. See RotaryControl,xaml.cs for a list of all the available properties.  
                                         <Condition Binding="{Binding ControlEnabled}" Value="false" />
                                     </MultiDataTrigger.Conditions>
                                     <MultiDataTrigger.Setters>
-                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/RedPlusBtn_160X159.png"/>
+                                        <Setter Property="Source" Value="pack://application:,,,/RotaryControl;component/Resources/UpArrowRed_64X64.png"/>
                                     </MultiDataTrigger.Setters>
                                 </MultiDataTrigger>
                             </Style.Triggers>

@@ -63,6 +63,16 @@
     <Resource Include="Resources\RedMinusBtn_160X162.png" />
     <Resource Include="Resources\RedPlusBtn_160X159.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\DownArrowGreen_168168.png" />
+    <Resource Include="Resources\DownArrowGreen_64X64.png" />
+    <Resource Include="Resources\DownArrowRed_168168.png" />
+    <Resource Include="Resources\DownArrowRed_64X64.png" />
+    <Resource Include="Resources\UpArrowGreen_168168.png" />
+    <Resource Include="Resources\UpArrowGreen_64X64.png" />
+    <Resource Include="Resources\UpArrowRed_168168.png" />
+    <Resource Include="Resources\UpArrowRed_64X64.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

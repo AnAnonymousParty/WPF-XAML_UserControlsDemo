@@ -37,6 +37,10 @@
 +--------------------------+----------+----------------------------------------------------------------------------------+
 | LegendFontSize           | double   | Size of the font used to display the legend text.                                |
 +--------------------------+----------+----------------------------------------------------------------------------------+
+| JSPresetX                | double   | Preset Joystick X position.                                                      |
++--------------------------+----------+----------------------------------------------------------------------------------+
+| JSPresetY                | double   | Preset Joystick Y position.                                                      |
++--------------------------+----------+----------------------------------------------------------------------------------+
 | SectionEnabled           | bool     | Determines whether the control in the section are enabled.                       |
 +--------------------------+----------+----------------------------------------------------------------------------------+
 | SectionTitleText         | String   | Text displayed in the section title (styled GroupBox).                           |
@@ -182,6 +186,26 @@ namespace SimpleMVVMUserControlDemo.UserControls.SectionJS
                                                                                                        typeof(Double),
                                                                                                        typeof(SectionJS), 
                                                                                                        new PropertyMetadata(10.0));
+        public Double JSPresetX
+        {
+            get { return (Double)GetValue(JSPresetXProperty); }
+            set { SetValue(JSPresetXProperty, value); }
+        }
+
+        public static readonly DependencyProperty JSPresetXProperty = DependencyProperty.Register("JSPresetX",
+                                                                                                  typeof(Double),
+                                                                                                  typeof(SectionJS), 
+                                                                                                  new PropertyMetadata(0.0));
+        public Double JSPresetY
+        {
+            get { return (Double)GetValue(JSPresetYProperty); }
+            set { SetValue(JSPresetYProperty, value); }
+        }
+
+        public static readonly DependencyProperty JSPresetYProperty = DependencyProperty.Register("JSPresetY",
+                                                                                                  typeof(Double),
+                                                                                                  typeof(SectionJS), 
+                                                                                                  new PropertyMetadata(0.0));
         public bool SectionEnabled
         {
             get { return (bool)GetValue(SectionEnabledProperty); }

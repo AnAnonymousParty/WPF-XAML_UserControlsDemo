@@ -50,6 +50,8 @@ WPF-XAML_UserControlsDemo. If not, see <https://www.gnu.org/licenses/>.
                                      JSXPosDisp="{Binding JS1XPosDisp, Mode=TwoWay}"
                                      JSYPos="{Binding JS1YPos, Mode=TwoWay}"
                                      JSYPosDisp="{Binding JS1YPosDisp, Mode=TwoWay}"
+                                     JSPresetX="30"
+                                     JSPresetY="50"
                                      LegendBrush="White"
                                      LegendFontSize="10"
                                      SectionEnabled="False"

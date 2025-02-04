@@ -23,11 +23,11 @@ namespace RotaryControl
     /// +==========================+==========+==========================================================================================+
     /// |          NAME            |   TYPE   |                              DESCRIPTION                                                 |
     /// +==========================+==========+==========================================================================================+
-    /// | ControlEnabled           | bool     | Determines whether the control is enabled.                                               |
-    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
     /// | Arcs		                   | Arcs     | An optional array of colored segments each with its own starting angle,                  |
     /// |                          |          | arc angle, radius and thickness.                                                         |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | ControlEnabled           | bool     | Determines whether the control is enabled.                                               |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+    
     /// | EndAngleInDegrees	       | double   | The angle of the last major tick relative to the 12 o'clock position.                    |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
     /// | FontBrush		              | Brush    | The brush used to draw the numerals around the label dial.                               |
@@ -40,6 +40,8 @@ namespace RotaryControl
     /// |                          |          | The inner dial may be used to draw a rotating knob with a circular position indicator.   |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
     /// | LabelDialRadius          | double   | The radius of the label dial.                                                            |
+    /// +--------------------------+----------+------------------------------------------------------------------------------------------+
+    /// | LabelMaxDigits           | int      | Maximum # of significant digits to display on the label.                                 |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
     /// | LegendBrush              | Brush    | The color of the title label displayed below the control.                                |
     /// +--------------------------+----------+------------------------------------------------------------------------------------------+
@@ -195,7 +197,7 @@ namespace RotaryControl
         /// <summary>
         /// Move the position marker.
         /// </summary>
-        /// <param name="pointInControl">Point object contaning the X/Y coordinates of the desired marker position.</param>
+        /// <param name="pointInControl">Point object containing the X/Y coordinates of the desired marker position.</param>
         public void PositionMarkerFromControlPosition(Point pointInControl)
         {
             double dX = pointInControl.X - _ellipseOuterDial.Width / 2;
@@ -281,13 +283,13 @@ namespace RotaryControl
             _grid.Children.Add(_pointerRectangle);
             _grid.Children.Add(_pointerStandard);          
 
-            _ellipseOuterDial.Fill = OuterDialFill;
-            _ellipseOuterDial.Stroke = OuterDialBorder;
+            _ellipseOuterDial.Fill            = OuterDialFill;
+            _ellipseOuterDial.Stroke          = OuterDialBorder;
             _ellipseOuterDial.StrokeThickness = OuterDialBorderThickness;
 
-            _ellipseInnerDial.Fill = InnerDialFill;
+            _ellipseInnerDial.Fill   = InnerDialFill;
             _ellipseInnerDial.Height = InnerDialRadius * 2;
-            _ellipseInnerDial.Width = InnerDialRadius * 2;
+            _ellipseInnerDial.Width  = InnerDialRadius * 2;
 
             Point pointCentre = new Point(100.0, 100.0);
 
@@ -312,14 +314,14 @@ namespace RotaryControl
 
                     RotaryControlArc arc = new RotaryControlArc();
 
-                    arc.AngleInDegrees = segmentAngleInDegrees;
-                    arc.Centre = pointCentre;
-                    arc.Fill = (item as RotaryControlSegment).Fill;
-                    arc.Radius = SegmentRadius;
-                    arc.Stroke = arc.Fill;
+                    arc.AngleInDegrees      = segmentAngleInDegrees;
+                    arc.Centre              = pointCentre;
+                    arc.Fill                = (item as RotaryControlSegment).Fill;
+                    arc.Radius              = SegmentRadius;
+                    arc.Stroke              = arc.Fill;
                     arc.StartAngleInDegrees = segmentStartAngleInDegrees;
-                    arc.StrokeThickness = 1;
-                    arc.Thickness = SegmentThickness;
+                    arc.StrokeThickness     = 1;
+                    arc.Thickness           = SegmentThickness;
 
                     segmentStartAngleInDegrees += segmentAngleInDegrees;
 
@@ -364,11 +366,11 @@ namespace RotaryControl
                 majorTickLength = (majorTicksDialWidth - InnerDialRadius * 2) / 2.0 - 2;
             }
 
-            double majorTickStart = majorTicksDialWidth / 2.0;
-            double majorTickEnd = majorTicksDialWidth / 2.0 - majorTickLength;
+            double majorTickStart  = majorTicksDialWidth / 2.0;
+            double majorTickEnd    = majorTicksDialWidth / 2.0 - majorTickLength;
             double minorTickLength = (MinorTickLength > 0.0) ? MinorTickLength : majorTickLength / 8;
-            double minorTickStart = (MinorTickDialRadius > 0.0) ? MinorTickDialRadius : majorTickEnd + minorTickLength;
-            double minorTickEnd = minorTickStart - minorTickLength;
+            double minorTickStart  = (MinorTickDialRadius > 0.0) ? MinorTickDialRadius : majorTickEnd + minorTickLength;
+            double minorTickEnd    = minorTickStart - minorTickLength;
 
             // The angle in radians subtended by adjacent major ticks.
 
@@ -412,10 +414,10 @@ namespace RotaryControl
 
                 polyline.Points.Add(new Point(x, y));
 
-                polyline.Stroke = MajorTickBrush;
-                polyline.StrokeEndLineCap = PenLineCap.Square;
+                polyline.Stroke             = MajorTickBrush;
+                polyline.StrokeEndLineCap   = PenLineCap.Square;
                 polyline.StrokeStartLineCap = PenLineCap.Square;
-                polyline.StrokeThickness = MajorTickWidth;
+                polyline.StrokeThickness    = MajorTickWidth;
 
                 _grid.Children.Add(polyline);
 
@@ -444,10 +446,10 @@ namespace RotaryControl
 
                         polyline.Points.Add(new Point(x, y));
 
-                        polyline.Stroke = MinorTickBrush;
-                        polyline.StrokeEndLineCap = PenLineCap.Round;
+                        polyline.Stroke             = MinorTickBrush;
+                        polyline.StrokeEndLineCap   = PenLineCap.Round;
                         polyline.StrokeStartLineCap = PenLineCap.Round;
-                        polyline.StrokeThickness = 1;
+                        polyline.StrokeThickness    = 1;
 
                         _grid.Children.Add(polyline);
                     }
@@ -464,11 +466,16 @@ namespace RotaryControl
 
                 string text = (MinimumValue + (iMajor * MajorTickIncrement)).ToString(CultureInfo.CurrentCulture);
 
-                label.Content = text;
-                label.FontSize = FontSize;
-                label.Foreground = FontBrush;
+                if (text.Length > LabelMaxDigits)
+                {
+                    text = text.Substring(0, LabelMaxDigits);
+                }
+
+                label.Content             = text;
+                label.FontSize            = FontSize;
+                label.Foreground          = FontBrush;
                 label.HorizontalAlignment = HorizontalAlignment.Center;
-                label.VerticalAlignment = VerticalAlignment.Center;
+                label.VerticalAlignment   = VerticalAlignment.Center;
 
                 _labels.Add(label);
 
@@ -539,16 +546,16 @@ namespace RotaryControl
 
             double majorAngleInRadians = StartAngleInRadians + (arcAngleInRadians * (Value - MinimumValue)) / (MajorTickIncrement * (NumberOfMajorTicks - 1));
 
-            double x = offsetFromCentre * Math.Sin(majorAngleInRadians);
+            double x = offsetFromCentre  * Math.Sin(majorAngleInRadians);
             double y = -offsetFromCentre * Math.Cos(majorAngleInRadians);
 
             _markerTranslation.X = x;
             _markerTranslation.Y = y;
 
-            _pointerAxle.Visibility = Visibility.Hidden;
-            _pointerCircle.Visibility = Visibility.Hidden;
-            _pointerStandard.Visibility = Visibility.Hidden;
-            _pointerArrow.Visibility = Visibility.Hidden;
+            _pointerAxle.Visibility      = Visibility.Hidden;
+            _pointerCircle.Visibility    = Visibility.Hidden;
+            _pointerStandard.Visibility  = Visibility.Hidden;
+            _pointerArrow.Visibility     = Visibility.Hidden;
             _pointerRectangle.Visibility = Visibility.Hidden;
 
             majorAngleInRadians -= 0.5 * Math.PI;
@@ -557,7 +564,7 @@ namespace RotaryControl
             {
                 if (PointerType == "standard")
                 {
-                    _pointerAxle.Visibility = Visibility.Visible;
+                    _pointerAxle.Visibility     = Visibility.Visible;
                     _pointerStandard.Visibility = Visibility.Visible;
 
                     double pointerLength = PointerLength;
@@ -567,9 +574,9 @@ namespace RotaryControl
                         pointerLength = _ellipseInnerDial.Width / 2.0;
                     }
 
-                    _pointerTopRight.Point = new Point(100 + pointerLength - 10, _pointerTopRight.Point.Y);
-                    _pointerBottomRight.Point = new Point(100 + pointerLength - 10, _pointerBottomRight.Point.Y);
-                    _pointerTip.Point = new Point(100 + pointerLength, _pointerTip.Point.Y);
+                    _pointerTopRight.Point           = new Point(100 + pointerLength - 10, _pointerTopRight.Point.Y);
+                    _pointerBottomRight.Point        = new Point(100 + pointerLength - 10, _pointerBottomRight.Point.Y);
+                    _pointerTip.Point                = new Point(100 + pointerLength, _pointerTip.Point.Y);
                     _pointerStandard.RenderTransform = new RotateTransform((majorAngleInRadians * 180.0) / Math.PI, 100, 100);
 
                     break;
@@ -577,7 +584,7 @@ namespace RotaryControl
 
                 if (PointerType == "rectangle")
                 {
-                    _pointerAxle.Visibility = Visibility.Visible;
+                    _pointerAxle.Visibility      = Visibility.Visible;
                     _pointerRectangle.Visibility = Visibility.Visible;
 
                     double pointerLength = PointerLength;
@@ -587,18 +594,18 @@ namespace RotaryControl
                         pointerLength = _ellipseInnerDial.Width / 2.0;
                     }
 
-                    _pointerRectangleTopRight.Point = new Point(100 + pointerLength, 100 - PointerWidth / 2);
+                    _pointerRectangleTopRight.Point    = new Point(100 + pointerLength, 100 - PointerWidth / 2);
                     _pointerRectangleBottomRight.Point = new Point(100 + pointerLength, 100 + PointerWidth / 2);
-                    _pointerRectangleTopLeft.Point = new Point(100, 100 - PointerWidth / 2);
-                    _pointerRectangleBottomLeft.Point = new Point(100, 100 + PointerWidth / 2);
-                    _pointerRectangle.RenderTransform = new RotateTransform((majorAngleInRadians * 180.0) / Math.PI, 100, 100);
+                    _pointerRectangleTopLeft.Point     = new Point(100, 100 - PointerWidth / 2);
+                    _pointerRectangleBottomLeft.Point  = new Point(100, 100 + PointerWidth / 2);
+                    _pointerRectangle.RenderTransform  = new RotateTransform((majorAngleInRadians * 180.0) / Math.PI, 100, 100);
 
                     break;
                 }
 
                 if (PointerType == "arrow")
                 {
-                    _pointerAxle.Visibility = Visibility.Visible;
+                    _pointerAxle.Visibility  = Visibility.Visible;
                     _pointerArrow.Visibility = Visibility.Visible;
 
                     double pointerLength = PointerLength;
@@ -608,22 +615,26 @@ namespace RotaryControl
                         pointerLength = _ellipseInnerDial.Width / 2.0;
                     }
 
-                    _pointerArrowTip.Point = new Point(100 + pointerLength, 100);
-                    _pointerArrowTopLeft.Point = new Point(100, 100 - PointerWidth / 2);
+                    _pointerArrowTip.Point        = new Point(100 + pointerLength, 100);
+                    _pointerArrowTopLeft.Point    = new Point(100, 100 - PointerWidth / 2);
                     _pointerArrowBottomLeft.Point = new Point(100, 100 + PointerWidth / 2);
                     _pointerArrow.RenderTransform = new RotateTransform((majorAngleInRadians * 180.0) / Math.PI, 100, 100);
 
                     break;
                 }
 
-                _pointerAxle.Visibility = Visibility.Hidden;
-                _pointerCircle.Visibility = Visibility.Visible;
-                _pointerStandard.Visibility = Visibility.Hidden;
+                if (PointerType == "circle")
+                {
+                    _pointerAxle.Visibility     = Visibility.Hidden;
+                    _pointerCircle.Visibility   = Visibility.Visible;
+                    _pointerStandard.Visibility = Visibility.Hidden;
+
+                    break;
+                }
 
                 break;
             }
         }
-
 
 
         #region Dependency Properties
@@ -672,8 +683,7 @@ namespace RotaryControl
         public static readonly DependencyProperty ControlEnabledProperty = DependencyProperty.Register("ControlEnabled",
                                                                                                        typeof(bool),
                                                                                                        typeof(RotaryControl),
-                                                                                                       new FrameworkPropertyMetadata(false, 
-                                                                                                                                     OnControlEnabledChanged));
+                                                                                                       new FrameworkPropertyMetadata(false));
         public bool ControlEnabled
         {
             get { return (bool)GetValue(ControlEnabledProperty); }
@@ -689,19 +699,6 @@ namespace RotaryControl
                 {
                     _pointerAxle.Stroke = PointerAxleFillInactive;
                 }
-            }
-        }
-
-        private static void OnControlEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            ((RotaryControl)d).OnControlEnabledChanged(e);
-        }
-
-        protected virtual void OnControlEnabledChanged(DependencyPropertyChangedEventArgs e)
-        {
-            if (null != e.NewValue)
-            {
-
             }
         }
 
@@ -926,6 +923,44 @@ namespace RotaryControl
             if (e.NewValue != null)
             {
                 LabelDialRadius = (double)e.NewValue;
+
+                CreateControl();
+            }
+        }
+
+        #endregion
+
+        #region LabelMaxDigits dependency property
+
+        [Bindable(true)]
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        public static readonly DependencyProperty LabelMaxDigitsProperty = DependencyProperty.Register("LabelMaxDigits",
+                                                                                                        typeof(int),
+                                                                                                        typeof(RotaryControl),
+                                                                                                        new FrameworkPropertyMetadata(2,
+                                                                                                        OnLabelMaxDigitsChanged));
+        public int LabelMaxDigits
+        {
+            get
+            {
+                return (int)GetValue(LabelMaxDigitsProperty);
+            }
+            set
+            {
+                SetValue(LabelMaxDigitsProperty, value);
+            }
+        }
+
+        private static void OnLabelMaxDigitsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((RotaryControl)d).OnLabelMaxDigitsChanged(e);
+        }
+
+        protected virtual void OnLabelMaxDigitsChanged(DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != null)
+            {
+                LabelMaxDigits = (int)e.NewValue;
 
                 CreateControl();
             }
